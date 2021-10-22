@@ -1,11 +1,13 @@
-import logo from './logo.svg';
 import Container from './components/Container';
-import './App.css';
+import './styles/App.css';
 
 function App() {
   return (
     <div className="App">
-          <Container />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link href='https://fonts.googleapis.com/css2?family=Space+Mono&display=swap' rel="stylesheet" />
+      <Container />
     </div>
   );
 }

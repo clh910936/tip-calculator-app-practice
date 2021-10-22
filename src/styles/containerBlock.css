@@ -1,7 +1,9 @@
 .containerBlock {
-    background-color: aqua;
     width: 100%;
     height: 100%;
-    border-radius: 5%;
     margin: 10px;
+    border-radius: 3vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }

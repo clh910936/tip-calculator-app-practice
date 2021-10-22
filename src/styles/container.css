@@ -1,21 +1,30 @@
 [class="container"] {
+    display: flex;
     background-color: white;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
+    border-radius: 3vh;
+
 }
 @media screen and (min-width: 400px){
     .container {
-        display: flex;
         flex-direction: column;
-        width: 100%;
+        width: 90%;
         height: 100%;
 }}
 
 @media screen and (min-width: 700px){
     .container {
-        display: flex;
         flex-direction: row;
         height: 50%;
         width: 80%;
     }
+}
+
+.firstBlock {
+    background-color: var(--white);
+}
+
+.secondBlock {
+    background-color: var(--primary-dark);
 }

@@ -1,9 +1,11 @@
 import "../styles/containerBlock.css";
 
-function ContainerBlock() {
+function ContainerBlock(props) {
+  var classname = props.className;
+  var content = props.content;
   return (
-    <div className="containerBlock">
-    
+    <div className={`containerBlock ${classname}`}>
+      {content}
     </div>
   );
 }

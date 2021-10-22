@@ -1,0 +1,38 @@
+label {
+    color: var(--font-grey);
+    font-weight: var(--font-weight-2);
+    display: block;
+}
+
+input[type="text"] {
+    position: relative;
+    width: 100%;
+    padding: 5px 15px;
+    direction: rtl;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight-3);
+    color: var(--font-input-color);
+    background-color: var(--input-background);
+    border: 1px solid var(--n-d-cyan-3);
+    border-radius: 5px;
+}
+
+input[type="text"]:focus {
+    border: 2px solid var(--n-d-cyan-1);
+    outline: none;
+}
+
+input[type="text"]:hover {
+    cursor: pointer;
+}
+
+.inputContainer {
+    position: relative;
+}
+
+.icon {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+}
