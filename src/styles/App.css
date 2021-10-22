@@ -18,6 +18,7 @@
   --font-input-color: var(--primary-dark);
   --app-background: var(--n-l-cyan-1);
   --input-background: var(--n-l-cyan-2);
+  --input-border-radius: 5px;
 }
 
 .App{

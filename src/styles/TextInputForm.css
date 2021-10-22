@@ -6,7 +6,7 @@ label {
 
 input[type="text"] {
     position: relative;
-    width: 100%;
+    max-width: 100%;
     padding: 5px 15px;
     direction: rtl;
     font-family: var(--font-family);
@@ -15,7 +15,7 @@ input[type="text"] {
     color: var(--font-input-color);
     background-color: var(--input-background);
     border: 1px solid var(--n-d-cyan-3);
-    border-radius: 5px;
+    border-radius: var(--input-border-radius);
 }
 
 input[type="text"]:focus {
