@@ -5,6 +5,16 @@
     width: 100%;
 }
 
+.buttonContainer button:hover {
+    background-color: var(--n-d-cyan-1);
+    color: var(--primary-dark);
+    cursor: pointer;
+}
+
+.buttonContainer button.selected {
+    background-color: var(--n-d-cyan-1);
+    color: var(--primary-dark);
+}
 .buttonContainer button {
     background-color: var(--primary-dark);
     color: var(--white);
@@ -17,12 +27,6 @@
     font-size: var(--font-size);
     font-weight: var(--font-weight-3);
     justify-content: center;
-}
-
-.buttonContainer button:hover {
-    background-color: var(--n-d-cyan-1);
-    color: var(--primary-dark);
-    cursor: pointer;
 }
 
 .buttonContainerChild {

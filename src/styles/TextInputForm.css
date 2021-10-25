@@ -29,6 +29,7 @@ input[type="text"]:hover {
 
 .inputContainer {
     position: relative;
+    max-width: 100%;
 }
 
 .icon {

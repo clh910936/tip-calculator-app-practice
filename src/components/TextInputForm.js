@@ -11,7 +11,7 @@ function TextInputForm(props) {
         <div className={className}>
             <label for={id}>{label}</label>
             <div className="inputContainer">
-                <input type="text" id={id} />
+                <input type="text" id={id} onChange={(e) => props.onChange(e.target.value)}/>
                 
                 {imageContent}
             </div>

@@ -4,10 +4,12 @@ import TextInputForm from "./TextInputForm";
 import dollarIcon from "../images/icon-dollar.svg";
 import personIcon from "../images/icon-person.svg";
 import ButtonContainer from "./ButtonContainer";
+import { onTipSelected, onBillEntered, onPeopleCountUpdate } from '../util/Actions';
 
-function Container() {
-  const firstBlockContent = makeFirstBlock();
-  const secondBlockContent = makeSecondBlock();
+function Container(props) {
+  const { state, dispatch } = props;
+  const firstBlockContent = makeFirstBlock(dispatch, state);
+  const secondBlockContent = makeSecondBlock(state);
   return (
     <div className="container">
       <ContainerBlock className="firstBlock" content={firstBlockContent}/>
@@ -16,20 +18,21 @@ function Container() {
   );
 }
 
-function makeFirstBlock() {
+function makeFirstBlock(dispatch, state) {
   return(
     <>
-      <TextInputForm label="Bill" id="bill" image={dollarIcon}/>
-      <ButtonContainer />
-      <TextInputForm label="Number of People" id="people" image={personIcon} />
+      <TextInputForm label="Bill" id="bill" image={dollarIcon} onChange={(bill => onBillEntered(bill, dispatch))}/>
+      <ButtonContainer onClick={(tip => onTipSelected(tip, dispatch))} tip={state.tip}/>
+      <TextInputForm label="Number of People" id="people" image={personIcon} onChange={(people) => onPeopleCountUpdate(people, dispatch)}/>
     </>
   );
 }
 
-function makeSecondBlock() {
+function makeSecondBlock(state) {
   return (
     <>
-      <p>Block 2</p>
+      <p>Tip /person: ${state.tip * state.bill / state.numPeople}</p>
+      <p>Bill /person: ${state.bill * (1 + state.tip) / state.numPeople}</p>
     </>
   );
 }
