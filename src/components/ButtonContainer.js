@@ -4,10 +4,10 @@ import TextInputForm from "./TextInputForm";
 function ButtonContainer(props) {
     const buttonsArr = getButtons(props.onClick, props.tip);
     return (
-        <div className="buttonContainer">
+        <grid className="buttonContainer">
             {buttonsArr}
             <TextInputForm className="buttonContainerChild" label="" id="customTip" onChange={(value) => props.onClick(value/100)}/>
-        </div>
+        </grid>
     );
 }
 
