@@ -7,6 +7,7 @@ label {
 input[type="text"] {
     position: relative;
     max-width: 100%;
+    box-sizing: border-box;
     padding: 5px 15px;
     direction: rtl;
     font-family: var(--font-family);
@@ -14,7 +15,7 @@ input[type="text"] {
     font-weight: var(--font-weight-3);
     color: var(--font-input-color);
     background-color: var(--input-background);
-    border: 1px solid var(--n-d-cyan-3);
+    border: 2px solid var(--n-d-cyan-3);
     border-radius: var(--input-border-radius);
 }
 
