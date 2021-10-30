@@ -1,0 +1,27 @@
+
+.AmountBlock {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    flex: 1;
+    margin: auto;
+}
+
+.bigLabel {
+    font-weight: var(--font-weight-3);
+    color: var(--white);
+    margin: 0px;
+}
+
+.subLabel {
+    font-weight: var(--font-weight-3);
+    color: var(--n-d-cyan-3);
+}
+
+.value {
+    font-weight: var(--font-weight-3);
+    color: var(--n-d-cyan-1);
+    font-size: 4vh;
+}
