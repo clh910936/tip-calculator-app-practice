@@ -36,6 +36,9 @@ function makeSecondBlock(state) {
     <>
       <AmountBlock valueDisplayed={tipValue} label="Tip Amount" subLabel="/ person" />
       <AmountBlock valueDisplayed={billValue} label="Total" subLabel="/ person" />
+      <div className="resetButton">
+        <button>RESET</button>
+      </div>
     </>
   );
 }

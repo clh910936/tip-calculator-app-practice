@@ -29,3 +29,24 @@
 .secondBlock {
     background-color: var(--primary-dark);
 }
+
+.resetButton {
+    height: 50%;
+    width: 100%;
+    align-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.resetButton button {
+    background-color: var(--n-d-cyan-1);
+    color: var(--primary-dark);
+    border-color: var(--n-d-cyan-1);
+    border-radius: 5px;
+    width: 100%;
+}
+
+.resetButton button:hover {
+    background-color: var(--n-l-cyan-1);
+    color: var(--primary-dark);
+}
