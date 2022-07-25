@@ -1,10 +1,7 @@
 name: Lighthouse CI Action
 
-on:
-  check_run:
-    types: [completed]
-
-
+on: push
+  
 
 jobs:
   audit:
