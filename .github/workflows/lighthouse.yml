@@ -8,44 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Print env
-        run: env
+      - name: Creating Check Run
+        id: create_run
+        run: |
+          RESPONSE=$(curl https://catfact.ninja/fact) |
+          RESPONSE_PROCESSED=$(fromJSON($RESPONSE)) |
+          echo $RESPONSE_PROCESSED |
+          echo "::set-output name=RESPONSE::$RESPONSE_PROCESSED"
       - name: Print
-        run: |
-          echo "${{ toJSON(github) }}""
-      - name: Get PR number
-        run: |
-          echo "PR_NUMBER=$( echo "$GITHUB_REF" | sed -n 's/refs\/pull\/\(.*\)\/merge/\1/p' )" >> $GITHUB_ENV
-
-      - name: Find Volt Preview Link Comment
-        uses: peter-evans/find-comment@v2
-        id: fc
-        with:
-          issue-number: ${{ env.PR_NUMBER }}
-          body-includes: Volt
-
-      - name: Save Volt Preview URL
-        run: |
-          echo "PREVIEW_URL=$( echo "${{ steps.fc.outputs.comment-body }}" | sed -n 's/\[View Branch Preview\](\(.*\))/\1/p')" >> $GITHUB_ENV
-
-      - name: Run Lighthouse
-        uses: treosh/lighthouse-ci-action@v9
-        id: audit
-        with:
-          urls: |
-            $PREVIEW_URL
-          configPath: "./lighthouserc.js"
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
-      # - name: Comment Lighthouse Results
-      #   uses: nick-fields/private-action-loader@v3
-      #   with:
-      #     pal-repo-token: ${{ secrets.GIT_TOKEN }}
-      #     pal-repo-name: RedVentures/core-web-vitals-action@master
-      #     # the following input gets passed to the private action
-      #     results: ${{ steps.audit.outputs.assertionResults }}
-      #     manifest: ${{ steps.audit.outputs.manifest }}
-      #     links: ${{ steps.audit.outputs.links }}
-      #     gitToken: ${{ secrets.GIT_TOKEN }}
-      #     slackWebHook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          echo "${{toJSON(steps.create_run.outputs)}}"
