@@ -12,7 +12,7 @@ jobs:
         id: create_run
         run: |
           RESPONSE=$(curl https://catfact.ninja/fact |
-          jq '.fact')
+          jq '.')
           # RESPONSE_PROCESSED=$(fromJSON($RESPONSE)) |
           # echo $RESPONSE_PROCESSED |
           echo "::set-output name=RESPONSE::$RESPONSE"
