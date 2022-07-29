@@ -16,4 +16,5 @@ jobs:
           echo $RESPONSE_PROCESSED |
           echo "::set-output name=RESPONSE::$RESPONSE_PROCESSED"
       - name: Print
+        run: |
           echo "${{toJSON(steps.create_run.outputs)}}"
