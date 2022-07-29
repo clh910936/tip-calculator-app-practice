@@ -11,7 +11,8 @@ jobs:
       - name: Creating Check Run
         id: create_run
         run: |
-          RESPONSE=$(curl https://catfact.ninja/fact) |
+          RESPONSE=$(curl https://catfact.ninja/fact |
+          jq '.fact')
           # RESPONSE_PROCESSED=$(fromJSON($RESPONSE)) |
           # echo $RESPONSE_PROCESSED |
           echo "::set-output name=RESPONSE::$(fromJSON($RESPONSE))"
