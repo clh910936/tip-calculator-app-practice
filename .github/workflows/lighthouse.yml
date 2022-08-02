@@ -20,12 +20,11 @@ jobs:
           https://api.github.com/repos/$GITHUB_REPOSITORY/check-runs \
           -d '{"name":"audit",
               "head_sha": "${{github.event.check_run.check_suite.head_sha}}",
-              "status":"in_progress" }' |
-          jq '.id')
-          echo "::set-output name=CHECKRUN_ID::$CHECKRUN_ID"
+              "status":"in_progress" }')
+          # echo "::set-output name=CHECKRUN_ID::$CHECKRUN_ID"
       - name: Print
         run: |
-          echo "${{toJSON(steps.create_run.outputs)}}"
+          # echo "${{toJSON(steps.create_run.outputs)}}"
       - name: t
         run: env
 
