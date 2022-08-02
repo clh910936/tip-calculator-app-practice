@@ -13,9 +13,8 @@ jobs:
         run: |
           RESPONSE=$(curl https://catfact.ninja/fact |
           jq '.')
-          RESPONSE_PROCESSED=$(echo "${{fromJSON($RESPONSE)}}")
           # echo $RESPONSE_PROCESSED |
-          echo "::set-output name=RESPONSE::$RESPONSE_PROCESSED"
+          echo "::set-output name=RESPONSE::$RESPONSE"
       - name: Print
         run: |
           echo "${{toJSON(steps.create_run.outputs)}}"
