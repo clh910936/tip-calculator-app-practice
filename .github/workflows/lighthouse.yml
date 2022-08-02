@@ -21,6 +21,7 @@ jobs:
           -d '{"name":"audit",
               "head_sha": "${{github.event.check_run.check_suite.head_sha}}",
               "status":"in_progress" }')
+          echo "$CHECKRUN_ID"
           # echo "::set-output name=CHECKRUN_ID::$CHECKRUN_ID"
       - name: Print
         run: |
