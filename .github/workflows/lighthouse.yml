@@ -1,44 +1,23 @@
 name: Lighthouse CI Action
 
-on: [pull_request]
-
-permissions:
-  checks: write
+on: push
+  
 
 jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Print
-        run: echo "${{toJSON(github)}}"
       - name: Creating Check Run
         id: create_run
         run: |
-          CHECKRUN_ID=$(curl \
-          -X POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: token ${{secrets.GITHUB_TOKEN}}" \
-          https://api.github.com/repos/$GITHUB_REPOSITORY/check-runs \
-          -d '{"name":"audit",
-              "head_sha": "${{github.event.check_run.check_suite.head_sha}}",
-              "status":"in_progress" }')
-          echo "$CHECKRUN_ID"
-          # echo "::set-output name=CHECKRUN_ID::$CHECKRUN_ID"
+          RESPONSE=$(curl https://catfact.ninja/fact |
+          jq '.')
+          RESPONSE_PROCESSED=$(fromJSON($RESPONSE))
+          # echo $RESPONSE_PROCESSED |
+          echo "::set-output name=RESPONSE::$RESPONSE_PROCESSED"
       - name: Print
         run: |
-          # echo "${{toJSON(steps.create_run.outputs)}}"
+          echo "${{toJSON(steps.create_run.outputs)}}"
       - name: t
         run: env
-
-
-              # the check run was created at the start of this action and needs to be logged as completed along with the conclusion status
-      - name: Update Check Run
-        if: always()
-        run: |
-          curl \
-          -X PATCH \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: token ${{secrets.GITHUB_TOKEN}}" \
-          https://api.github.com/repos/$GITHUB_REPOSITORY/check-runs/${{steps.create_run.outputs.CHECKRUN_ID}} \
-          -d '{"name":"audit", "status":"completed","conclusion": "successful" }'
