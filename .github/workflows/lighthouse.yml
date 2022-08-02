@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Print
+        run: echo "${{toJSON(github)}}"
       - name: Creating Check Run
         id: create_run
         run: |
