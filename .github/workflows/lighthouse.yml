@@ -13,10 +13,15 @@ jobs:
         run: |
           RESPONSE=$(curl https://catfact.ninja/fact |
           jq '.')
+          FACT=$(echo $RESPONSE | jq '.fact')
+          LENGTH=$(echo $RESPONSE | jq '.length')
+
           # echo $RESPONSE_PROCESSED |
-          echo "::set-output name=RESPONSE::$RESPONSE"
+          echo "::set-output name=FACT::$FACT"
+          echo "::set-output name=LENGTH::$LENGTH"
+
       - name: Print
         run: |
-          echo "${{toJSON(steps.create_run.outputs.RESPONSE)}}"
+          echo "${{toJSON(steps.create_run.outputs)}}"
       - name: t
         run: env
