@@ -1,10 +1,10 @@
-name: Lighthouse CI Action
+name: On Release
 
-on: release
+on: push
   
 
 jobs:
-  audit:
+  on-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
