@@ -22,9 +22,19 @@ jobs:
         shell: bash
         run: echo ${GITHUB_REF##*/}
         id: extract_branch
+      - name: Get jira number
+        shell: bash
+        run: echo "JIRA_NUMBER=$( echo "${{ GITHUB_REF##*/ }}" | sed -n '\b[A-Z][A-Z0-9_]+-[1-9][0-9]*')" >> $GITHUB_ENV
+      - name: Print jira
+        shell: bash
+        run: |
+          echo $JIRA_NUMBER
+
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh pr create -B master -H ${GITHUB_REF##*/}  --draft --title 'Merge branch_to_merge into base_branch' --body-file .github/pull_request_template.md
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
