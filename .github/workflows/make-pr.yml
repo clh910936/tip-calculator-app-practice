@@ -25,6 +25,6 @@ jobs:
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh pr create -B master -H ${GITHUB_REF##*/} --title 'Merge branch_to_merge into base_branch' --body 'Created by Github action'
+        run: gh pr create -B master -H ${GITHUB_REF##*/}
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
