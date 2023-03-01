@@ -30,10 +30,10 @@ jobs:
       #   run: |
       #     echo $JIRA_NUMBER
 
-      # - name: create pull request
-      #   env:
-      #     GH_TOKEN: ${{ github.token }}
-      #   run: gh pr create -B master -H ${GITHUB_REF##*/}  --draft --title 'Merge branch_to_merge into base_branch' --body-file .github/pull_request_template.md
+      - name: create pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr create -B master -H ${GITHUB_REF}  --draft --title 'Merge branch_to_merge into base_branch' --body-file .github/pull_request_template.md
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
