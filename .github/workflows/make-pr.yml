@@ -24,16 +24,16 @@ jobs:
         id: extract_branch
       - name: Get jira number
         shell: bash
-        run: echo "JIRA_NUMBER=$( echo "${ GITHUB_REF }" | sed -n '\b[A-Z][A-Z0-9_]+-[1-9][0-9]*')" >> $GITHUB_ENV
-      - name: Print jira
-        shell: bash
-        run: |
-          echo $JIRA_NUMBER
+        run: echo ${ GITHUB_REF } | sed -n '\b[A-Z][A-Z0-9_]+-[1-9][0-9]*'
+      # - name: Print jira
+      #   shell: bash
+      #   run: |
+      #     echo $JIRA_NUMBER
 
 
 
 
-          
+
 
       - name: create pull request
         env:
