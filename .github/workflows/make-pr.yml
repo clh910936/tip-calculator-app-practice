@@ -29,7 +29,7 @@ jobs:
       - name: Print jira
         shell: bash
         run: |
-          echo ${{steps.find-jira-number.outputs.jiraNumber}}
+          echo ${{steps.find-jira-number.outputs.JIRA_NUMBER}}
 
 
 
