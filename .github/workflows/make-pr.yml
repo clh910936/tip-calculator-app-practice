@@ -25,11 +25,11 @@ jobs:
       - name: Find jira number
         id: find-jira-number
         shell: bash
-        run: echo "jiraNumber=$(echo ${ GITHUB_REF } | sed '/([A-Za-z][A-Za-z0-9]+-[0-9]+)/g')" >> $GITHUB_OUTPUT
-      - name: Print jira
-        shell: bash
-        run: |
-          echo ${{steps.find-jira-number.outputs.jiraNumber}}
+        run: echo ${ GITHUB_REF } | sed '/([A-Za-z][A-Za-z0-9]+-[0-9]+)/g')
+      # - name: Print jira
+      #   shell: bash
+      #   run: |
+      #     echo ${{steps.find-jira-number.outputs.jiraNumber}}
 
 
 
