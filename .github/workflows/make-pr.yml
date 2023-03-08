@@ -38,19 +38,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo $GITHUB_REF
-          temp=$GITHUB_REF
           prs=$(gh pr list \
               --repo "$GITHUB_REPOSITORY" \
-              --json baseRefName,headRefName \
-              --jq '
-                  map(select(.baseRefName == "master" and .headRefName == $temp))
-                  | length
-              ')
+              --json baseRefName,headRefName \)
           echo $prs
-          if ((prs > 0)); then
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-              echo "skipping"
-          fi
+          for i in $prs
+            do
+              if(i.baseRefName = "master" && .headRefName = $GITHUB_REF)
+                echo "present"
+                echo "skip=true" >> "$GITHUB_OUTPUT"
+              fi
+          done
+          # echo $prs
+          # if ((prs > 0)); then
+          #     echo "skip=true" >> "$GITHUB_OUTPUT"
+          #     echo "skipping"
+          # fi
 
 
       - name: create pull request
