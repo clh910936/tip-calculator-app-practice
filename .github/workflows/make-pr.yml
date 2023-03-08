@@ -32,12 +32,27 @@ jobs:
           echo ${{steps.find-jira-number.outputs.JIRA_NUMBER}}
 
 
-
+      - name: Check if PR exists
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          prs=$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --json baseRefName,headRefName \
+              --jq '
+                  map(select(.baseRefName == "master" and .headRefName == "dev"))
+                  | length
+              ')
+          if ((prs > 0)); then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
 
 
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
+        if: '!steps.check.outputs.skip'
         run: gh pr create -B master -H ${GITHUB_REF}  --draft --title '${{steps.find-jira-number.outputs.JIRA_NUMBER}} | Draft PR' --body-file .github/pull_request_template.md
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
