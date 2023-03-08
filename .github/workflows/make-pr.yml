@@ -41,7 +41,7 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --json baseRefName,headRefName \
               --jq '
-                  map(select(.baseRefName == "master" and .headRefName == $GITHUB_REF))
+                  map(select(.baseRefName == "master" and .headRefName == "$GITHUB_REF"))
                   | length
               ')
           if ((prs > 0)); then
