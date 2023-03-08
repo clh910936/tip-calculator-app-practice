@@ -38,7 +38,7 @@ jobs:
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh pr create -B master -H ${GITHUB_REF}  --draft --title '${steps.find-jira-number.outputs.JIRA_NUMBER} | Draft PR' --body-file .github/pull_request_template.md
+        run: gh pr create -B master -H ${GITHUB_REF}  --draft --title '${{steps.find-jira-number.outputs.JIRA_NUMBER}} | Draft PR' --body-file .github/pull_request_template.md
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
