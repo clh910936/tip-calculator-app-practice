@@ -40,7 +40,7 @@ jobs:
           echo $GITHUB_REF
           prs=$(gh pr list \
               --repo "$GITHUB_REPOSITORY" \
-              --json baseRefName,headRefName \)
+              --json baseRefName,headRefName)
           echo $prs
           for i in $prs
             do
