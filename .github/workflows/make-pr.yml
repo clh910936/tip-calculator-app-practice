@@ -44,7 +44,9 @@ jobs:
           echo $prs
           for i in $prs
             do
-              echo $(echo $i | jq -r '.baseRefName')
+             echo $i
+
+              # echo $(echo $i | jq -r '.baseRefName')
               # echo $(i_headRefName == $GITHUB_REF)
               # if(i_baseRefName == "master" && i_headRefName == $GITHUB_REF) then
               #   echo "present"
