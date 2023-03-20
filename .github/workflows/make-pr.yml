@@ -44,9 +44,9 @@ jobs:
           echo $prs
           for i in $prs
             do
-              echo $(i.baseRefName = "master")
-              echo $(i.headRefName = $GITHUB_REF)
-              if(i.baseRefName = "master" && i.headRefName = $GITHUB_REF) then
+              echo $(i.baseRefName == "master")
+              echo $(i.headRefName == $GITHUB_REF)
+              if(i.baseRefName == "master" && i.headRefName == $GITHUB_REF) then
                 echo "present"
                 echo "skip=true" >> "$GITHUB_OUTPUT"
               fi
