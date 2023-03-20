@@ -42,7 +42,7 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --json baseRefName,headRefName)
           echo $prs
-          for i in $prs
+          for i in "${prs[@]}"
             do
              echo $i
 
