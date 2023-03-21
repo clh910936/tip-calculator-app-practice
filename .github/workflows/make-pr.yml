@@ -45,6 +45,12 @@ jobs:
             _jq() {
               echo ${row} | base64 --decode | jq -r ${1}
             }
+            if($(_jq '.baseRefName') == "master") then
+              echo "matches master"
+              if($(_jq '.headRefName') == $GITHUB_REF) then
+                echo "matches ref"
+              fi
+            fi
             echo $(_jq '.baseRefName')
             echo $(_jq '.headRefName')
 
