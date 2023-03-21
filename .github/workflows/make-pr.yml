@@ -42,7 +42,7 @@ jobs:
               --json baseRefName,headRefName )
 
 
-          echo $(echo $prs | jq '.[] | select(.baseRefName=="master") | select(.headRefName==${GITHUB_REF})')
+          echo $(echo $prs | jq '.[] | select(.baseRefName=="master") | select(.headRefName==$GITHUB_REF)')
           
           # for row in $(echo "${prs}" | jq -r '.[] | @base64'); do
           #   _jq() {
