@@ -46,6 +46,8 @@ jobs:
         run: |
           prs=$(gh pr list \
               --repo "$GITHUB_REPOSITORY" \
+              --base "master"
+              --head "$GITHUB_REF"
               --json baseRefName,headRefName )
 
           echo "$prs"
@@ -65,6 +67,6 @@ jobs:
         run: |
           jiraNumber="${{steps.find-jira-number.outputs.JIRA_NUMBER}}"
           formattedTitle="${{steps.find-branch-name.outputs.FORMATTED_NAME}}"
-          gh pr create -B master -H ${GITHUB_REF}  --draft --title "$jiraNumber | $formattedTitle" --body-file .github/pull_request_template.md
+          gh pr create -B master -H ${GITHUB_REF} --draft --title "$jiraNumber | $formattedTitle" --body-file .github/pull_request_template.md
 
 
