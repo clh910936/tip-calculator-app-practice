@@ -31,11 +31,12 @@ jobs:
         run: |
           echo ${{steps.find-jira-number.outputs.JIRA_NUMBER}}
 
-      - name: Print rest of branch name
-        id: branch-name
+      - name: Get formatted branch name
+        id: find-branch-name
         shell: bash
         run: |
-          echo $(echo $GITHUB_REF | grep -o -P '(?!.*\/).+' | tr '-' ' ')
+          formattedName=$(echo $GITHUB_REF | grep -o -P '(?!.*\/).+' | tr '-' ' ' | tr '_' ' ')
+          echo "FORMATTED_NAME=$formattedName" >> $GITHUB_OUTPUT
 
 
       - name: Check if PR exists
@@ -59,7 +60,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         if: '!steps.check.outputs.skip'
-        run: gh pr create -B master -H ${GITHUB_REF}  --draft --title '${{steps.find-jira-number.outputs.JIRA_NUMBER}} | Draft PR' --body-file .github/pull_request_template.md
+        run: |
+          echo ${{steps.find-branch-name.outputs.FORMATTED_NAME}}
+          gh pr create -B master -H ${GITHUB_REF}  --draft --title '${{steps.find-jira-number.outputs.JIRA_NUMBER}} | Draft PR' --body-file .github/pull_request_template.md
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
