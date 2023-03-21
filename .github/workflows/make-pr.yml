@@ -48,7 +48,7 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --json baseRefName,headRefName )
 
-
+          echo "$prs"
           matchingPr=$(echo $prs | jq --arg github_ref $GITHUB_REF '.[] | select(.baseRefName=="master") | select(.headRefName==($github_ref))')
           echo "$matchingPr"
           if [ "$matchingPr" != "" ]; then
