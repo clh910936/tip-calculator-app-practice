@@ -62,8 +62,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         if: '!steps.pr-exists.outputs.skip'
         run: |
-          jiraNumber=${{steps.find-jira-number.outputs.JIRA_NUMBER}}
-          formattedTitle=${{steps.find-branch-name.outputs.FORMATTED_NAME}}
+          jiraNumber="${{steps.find-jira-number.outputs.JIRA_NUMBER}}"
+          formattedTitle="${{steps.find-branch-name.outputs.FORMATTED_NAME}}"
           gh pr create -B master -H ${GITHUB_REF}  --draft --title "$jiraNumber | $formattedTitle" --body-file .github/pull_request_template.md
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
