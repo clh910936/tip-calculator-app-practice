@@ -47,12 +47,12 @@ jobs:
             }
             if["$(_jq '.baseRefName')" = "master"] then
               echo "matches master"
-              if["$(_jq '.headRefName')" = "$GITHUB_REF"] then
-                echo "matches ref"
-              fi
+              # if["$(_jq '.headRefName')" = "$GITHUB_REF"] then
+              #   echo "matches ref"
+              # fi
             fi
-            echo $(_jq '.baseRefName')
-            echo $(_jq '.headRefName')
+            # echo $(_jq '.baseRefName')
+            # echo $(_jq '.headRefName')
 
           done
 
