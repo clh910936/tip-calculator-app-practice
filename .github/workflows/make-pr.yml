@@ -40,7 +40,7 @@ jobs:
 
 
       - name: Check if PR exists
-        id: check
+        id: pr-exists
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -50,6 +50,7 @@ jobs:
 
 
           matchingPr=$(echo $prs | jq --arg github_ref $GITHUB_REF '.[] | select(.baseRefName=="master") | select(.headRefName==($github_ref))')
+          echo "$matchingPr"
           if [ "$matchingPr" != "" ]; then
             echo "present"
             echo "skip=true" >> "$GITHUB_OUTPUT"
@@ -59,10 +60,11 @@ jobs:
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
-        if: '!steps.check.outputs.skip'
+        if: '!steps.pr-exists.outputs.skip'
         run: |
-          echo ${{steps.find-branch-name.outputs.FORMATTED_NAME}}
-          gh pr create -B master -H ${GITHUB_REF}  --draft --title '${{steps.find-jira-number.outputs.JIRA_NUMBER}} | Draft PR' --body-file .github/pull_request_template.md
+          jiraNumber=${{steps.find-jira-number.outputs.JIRA_NUMBER}}
+          formattedTitle=${{steps.find-branch-name.outputs.FORMATTED_NAME}}
+          gh pr create -B master -H ${GITHUB_REF}  --draft --title '$jiraNumber | $formattedTitle' --body-file .github/pull_request_template.md
       #   env:
       #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
