@@ -42,8 +42,11 @@ jobs:
               --json baseRefName,headRefName )
 
 
-          echo $(echo $prs | jq --arg github_ref $GITHUB_REF '.[] | select(.baseRefName=="master") | select(.headRefName==($github_ref))')
-          
+          matchingPr=$(echo $prs | jq --arg github_ref $GITHUB_REF '.[] | select(.baseRefName=="master") | select(.headRefName==($github_ref))')
+          if [ "$matchingPr" != "" ]; then
+            echo "present"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
           # for row in $(echo "${prs}" | jq -r '.[] | @base64'); do
           #   _jq() {
           #     echo ${row} | base64 --decode | jq -r ${1}
