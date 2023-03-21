@@ -37,13 +37,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo $GITHUB_REF
           prs=$(gh pr list \
               --repo "$GITHUB_REPOSITORY" \
               --json baseRefName,headRefName )
 
 
-          echo $(echo $prs | jq '.[] | select(.baseRefName=="master") | select(.headRefName=="$GITHUB_REF")')
+          echo $(echo $prs | jq '.[] | select(.baseRefName=="master") | select(.headRefName==${GITHUB_REF})')
           
           # for row in $(echo "${prs}" | jq -r '.[] | @base64'); do
           #   _jq() {
