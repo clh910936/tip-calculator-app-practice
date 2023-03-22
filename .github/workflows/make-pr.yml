@@ -50,9 +50,10 @@ jobs:
           if [ -n "$jiraNumber" ]; then
             echo "string not empty"
             finalTitle+="$jiraNumber | "
+            echo "$finalTitle"
           fi
           formattedTitle="${{steps.formatted-branch-name.outputs.FORMATTED_NAME}}"
           finalTitle+="$formattedTitle"
-          gh pr create -B master -H ${GITHUB_REF} --draft --title "$formattedTitle" --body-file .github/pull_request_template.md
+          gh pr create -B master -H ${GITHUB_REF} --draft --title "$finalTitle" --body-file .github/pull_request_template.md
 
 
