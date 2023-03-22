@@ -55,10 +55,11 @@ jobs:
           # echo "$GITHUB_REF"
           # matchingPr=$(echo $prs | jq --arg github_ref $GITHUB_REF '.[] | select(.baseRefName=="master") | select(.headRefName==($github_ref))')
           # echo "$matchingPr"
-          if [ -n "$prs" ]; then
+          if [ "$prs" != [] ]; then
             echo "present"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
+
 
       - name: create pull request
         env:
