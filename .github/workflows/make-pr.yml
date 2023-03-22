@@ -44,10 +44,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "$GITHUB_REF"
           prs=$(gh pr list \
-              --repo "$GITHUB_REPOSITORY" \
-              --Base "master" \
-              --H "$GITHUB_REF" \
+              --repo $GITHUB_REPOSITORY \
+              --b "master" \
+              --h $GITHUB_REF \
               --json baseRefName,headRefName )
 
           echo "$prs"
