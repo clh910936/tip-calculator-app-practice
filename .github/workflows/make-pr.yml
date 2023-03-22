@@ -1,0 +1,72 @@
+name: Pull Request Action
+on: push
+
+permissions:
+  pull-requests: write
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Extract branch name
+        shell: bash
+        run: echo ${GITHUB_REF}
+        id: extract_branch
+      - name: Find jira number
+        id: find-jira-number
+        shell: bash
+        run: echo "JIRA_NUMBER=$(echo "$GITHUB_REF" | grep -o -P '([A-Za-z][A-Za-z0-9]+-[0-9]+)')" >> $GITHUB_OUTPUT
+      - name: Print jira
+        shell: bash
+        run: |
+          echo ${{steps.find-jira-number.outputs.JIRA_NUMBER}}
+
+      - name: Get formatted branch name
+        id: find-branch-name
+        shell: bash
+        run: |
+          formattedName=$(echo $GITHUB_REF | grep -o -P '(?!.*\/).+' | tr '-' ' ' | tr '_' ' ')
+          echo "FORMATTED_NAME=$formattedName" >> $GITHUB_OUTPUT
+
+
+      - name: Check if PR exists
+        id: pr-exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GITHUB_REF"
+          prs=$(gh pr list \
+              --repo $GITHUB_REPOSITORY \
+              --base "master" \
+              --head ${GITHUB_REF#refs/heads/} \
+              --json baseRefName,headRefName )
+
+          echo "$prs"
+          # echo "$GITHUB_REF"
+          # matchingPr=$(echo $prs | jq --arg github_ref $GITHUB_REF '.[] | select(.baseRefName=="master") | select(.headRefName==($github_ref))')
+          # echo "$matchingPr"
+          if [ -n "$prs" ]; then
+            echo "present"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: create pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: '!steps.pr-exists.outputs.skip'
+        run: |
+          jiraNumber="${{steps.find-jira-number.outputs.JIRA_NUMBER}}"
+          formattedTitle="${{steps.find-branch-name.outputs.FORMATTED_NAME}}"
+          gh pr create -B master -H ${GITHUB_REF} --draft --title "$jiraNumber | $formattedTitle" --body-file .github/pull_request_template.md
+
+
