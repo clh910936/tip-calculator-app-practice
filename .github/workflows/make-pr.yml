@@ -46,6 +46,7 @@ jobs:
         run: |
           jiraNumber="${{steps.find-jira-number.outputs.JIRA_NUMBER}}"
           finalTitle=""
+          echo "$jiraNumber"
           if [ -z "$jiraNumber" ]; then
             echo "string not empty"
             finalTitle+="$jiraNumber | "
