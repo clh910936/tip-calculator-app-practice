@@ -46,9 +46,9 @@ jobs:
         run: |
           jiraNumber="${{steps.find-jira-number.outputs.JIRA_NUMBER}}"
           finalTitle=""
-          if [ -n "$jiraNumber" ]; then
-            finalTitle+="$jiraNumber"
-            finalTitle+=" | "
+          if [ -z "$jiraNumber" ]; then
+            echo "$jiraNumber"
+            finalTitle+="$jiraNumber | "
           fi
           formattedTitle="${{steps.formatted-branch-name.outputs.FORMATTED_NAME}}"
           finalTitle+="$formattedTitle"
