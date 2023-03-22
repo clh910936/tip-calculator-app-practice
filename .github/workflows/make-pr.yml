@@ -32,8 +32,6 @@ jobs:
               --head ${GITHUB_REF#refs/heads/} \
               --json baseRefName,headRefName )
 
-          echo "$prs"
-
           if [ "$prs" != [] ]; then
             echo "present"
             echo "skip=true" >> "$GITHUB_OUTPUT"
