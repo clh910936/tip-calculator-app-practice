@@ -44,7 +44,7 @@ jobs:
         run: |
           defaultBranch=${{ github.event.repository.default_branch }}
           jiraNumber="${{steps.find-jira-number.outputs.JIRA_NUMBER}}"
-          author="${{github.event.commits[0].author }}"
+          author="${{fromJSON(github.event.commits[0].author)}}"
           finalTitle=""
           # prepend title with jira number and formatting
           if [ -n "$jiraNumber" ]; then
