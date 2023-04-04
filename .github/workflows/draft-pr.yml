@@ -37,6 +37,21 @@ jobs:
             echo "SKIP=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check if author label exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: '!steps.pr-exists.outputs.SKIP'
+          
+        run: |
+          author="${{github.event.commits[0].author.name }}"
+          labels=$(gh label list --search "$author")
+          echo $labels
+          if [ "$labels" = [] ]; then
+            echo "label doesnt exist"
+            gh label create "$author" --description "PR author" --color #3B2E58
+          fi
+
+
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
