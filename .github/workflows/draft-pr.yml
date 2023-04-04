@@ -44,9 +44,9 @@ jobs:
           
         run: |
           author="${{github.event.commits[0].author.name }}"
-          labels=$(gh label list --search "$author")
-          echo $labels
-          if [ "$labels" == [] ]; then
+          labelsList=$(gh label list --search "$author")
+          echo $labelsList
+          if [ "$labelsList" == [] ]; then
             echo "label doesnt exist"
             gh label create "$author" --description "PR author" --color #3B2E58
           fi
