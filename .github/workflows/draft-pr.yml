@@ -52,4 +52,4 @@ jobs:
           fi
           formattedTitle="${{steps.formatted-branch-name.outputs.FORMATTED_NAME}}"
           finalTitle+="$formattedTitle"
-          gh pr create -B ${defaultBranch} -H ${GITHUB_REF} --draft --title "$finalTitle" --label "$author" --body-file .github/pull_request_template.md --assignee "$author"
+          gh pr create -B ${defaultBranch} -H ${GITHUB_REF} --draft --title "$finalTitle" --label "$author" --body-file .github/pull_request_template.md
