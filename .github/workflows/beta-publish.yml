@@ -24,6 +24,6 @@ jobs:
       - name: Append commit SHA
         run: |
           github_sha="${{ github.sha }}"
-          trimmed_sha="${{ github_sha:0:5 }}"
+          trimmed_sha="${github_sha::5}"
           version="${{ steps.read-json.outputs.version }}.${trimmed_sha}"
           echo "Version with commit SHA: $version"
