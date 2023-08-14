@@ -1,4 +1,4 @@
-name: Read package.json on PR to beta branch
+name: Publish beta development tag
 
 on:
   pull_request:
@@ -15,4 +15,5 @@ jobs:
 
       - name: Read package.json
         run: |
-          cat package.json
+          version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
+          echo "Version: $version"
