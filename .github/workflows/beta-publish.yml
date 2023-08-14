@@ -42,6 +42,9 @@ jobs:
 
       - name: Publish beta development tag
         run: |
-          new_version="${{ steps.determine-version.outputs.new_version }}"
+          github_sha="${{ github.sha }}"
+          trimmed_sha="${github_sha::5}"
+
+          new_version="${{ steps.determine-version.outputs.new_version }}-beta.${trimmed_sha}"
           echo "New version: $new_version"
           # Add your actions to publish the tag or perform any other necessary steps with the new version
