@@ -23,6 +23,6 @@ jobs:
 
       - name: Append commit SHA
         run: |
-          github_sha="${github.sha:0:5}"
+          github_sha="${{github.sha}}:0:5"
           version="${{ steps.get-current-version.outputs.current_version }}.${github_sha}"
           echo "Version with commit SHA: $version"
