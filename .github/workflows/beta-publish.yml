@@ -1,0 +1,18 @@
+name: Read package.json on PR to beta branch
+
+on:
+  pull_request:
+    branches:
+      - beta
+
+jobs:
+  read-package-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Read package.json
+        run: |
+          cat package.json
