@@ -40,11 +40,13 @@ jobs:
           
           echo "::set-output name=new_version::$new_version"
 
-      - name: Publish beta development tag
+      - name: Update package.json
         run: |
           github_sha="${{ github.sha }}"
           trimmed_sha="${github_sha::5}"
 
           new_version="${{ steps.determine-version.outputs.new_version }}-beta.${trimmed_sha}"
-          echo "New version: $new_version"
-          # Add your actions to publish the tag or perform any other necessary steps with the new version
+
+          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json
+          cat package.json
+          # Add your actions to commit and push the updated package.json file
