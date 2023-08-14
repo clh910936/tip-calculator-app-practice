@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: beta
 
       - name: Read package.json
         id: read-json
@@ -62,4 +60,4 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git add package.json
           git commit -m "Updating dev version"
-          git push
+          git push origin HEAD:${{ github.ref }}
