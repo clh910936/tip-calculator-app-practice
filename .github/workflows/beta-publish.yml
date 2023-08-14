@@ -8,18 +8,21 @@ on:
 jobs:
   read-package-json:
     runs-on: ubuntu-latest
+    outputs:
+      # version: ${{ steps.read-json.outputs.version }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Read package.json
+        id: get-current-version
         run: |
-          version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
-          echo "Version: $version"
+          echo "::set-output name=current_version::$(cat package.json | grep -oP '(?<="version": ")[^"]+')"
+          echo "Version: ${{ steps.get-current-version.outputs.current_version }}"
 
       - name: Append commit SHA
         run: |
-          version="${version}.${{ github.sha }}"
-          version="${version:0:12}"
+          github_sha="${github.sha:0:5}"
+          version="${{ steps.get-current-version.outputs.current_version }}.${github_sha}"
           echo "Version with commit SHA: $version"
