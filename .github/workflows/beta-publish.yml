@@ -61,6 +61,7 @@ jobs:
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git checkout ${{ github.head_ref }}
           git add package.json
           git commit -m "Updating dev version"
-          git push origin ${{ github.head_ref }}
+          git push
