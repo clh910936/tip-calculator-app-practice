@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.read-json.outputs.version }}
+      commit_message: ${{ steps.update-package-json.outputs.commit_message }}
 
     steps:
       - name: Checkout code
@@ -41,6 +42,7 @@ jobs:
           echo "::set-output name=new_version::$new_version"
 
       - name: Update package.json
+        id: update-package-json
         run: |
           github_sha="${{ github.sha }}"
           trimmed_sha="${github_sha::5}"
@@ -49,4 +51,11 @@ jobs:
           
           jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
-          # Add your actions to commit and push the updated package.json file
+
+      - name: Commit and push changes
+        run: |
+          # git config --global user.name "Your Name"
+          # git config --global user.email "your@example.com"
+          git add package.json
+          git commit -m "${{ steps.update-package-json.outputs.commit_message }}"
+          git push
