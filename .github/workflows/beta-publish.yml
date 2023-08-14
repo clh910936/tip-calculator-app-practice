@@ -21,9 +21,26 @@ jobs:
           echo "::set-output name=version::$(cat package.json | grep -oP '(?<="version": ")[^"]+')"
           echo "Version: ${{ steps.read-json.outputs.version }}"
 
-      - name: Append commit SHA
+      - name: Determine new version
+        id: determine-version
         run: |
-          github_sha="${{ github.sha }}"
-          trimmed_sha="${github_sha::5}"
-          version="${{ steps.read-json.outputs.version }}.${trimmed_sha}"
-          echo "Version with commit SHA: $version"
+          version="${{ steps.read-json.outputs.version }}"
+          
+          if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            version_parts=(${version//./ })
+            middle_part=$((version_parts[1] + 1))
+            new_version="${version_parts[0]}.${middle_part}.${version_parts[2]}"
+          elif [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$ ]]; then
+            new_version="${version%-*}"
+          else
+            echo "Invalid version format"
+            exit 1
+          fi
+          
+          echo "::set-output name=new_version::$new_version"
+
+      - name: Publish beta development tag
+        run: |
+          new_version="${{ steps.determine-version.outputs.new_version }}"
+          echo "New version: $new_version"
+          # Add your actions to publish the tag or perform any other necessary steps with the new version
