@@ -17,3 +17,9 @@ jobs:
         run: |
           version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
           echo "Version: $version"
+
+      - name: Append commit SHA
+        run: |
+          version="${version}.${{ github.sha }}"
+          version="${version:0:12}"
+          echo "Version with commit SHA: $version"
