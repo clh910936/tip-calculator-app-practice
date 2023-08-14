@@ -46,7 +46,7 @@ jobs:
           trimmed_sha="${github_sha::5}"
 
           new_version="${{ steps.determine-version.outputs.new_version }}-beta.${trimmed_sha}"
-
-          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json
+          
+          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
           # Add your actions to commit and push the updated package.json file
