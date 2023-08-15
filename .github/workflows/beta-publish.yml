@@ -37,7 +37,7 @@ jobs:
             echo "Invalid version format, needs to be dd.dd.dd OR dd.dd.dd-beta.{GITHUB_SHA}"
             exit 1
           fi
-
+          echo $new_version_number
           github_sha="${{ github.sha }}"
           trimmed_sha="${github_sha::5}"
 
