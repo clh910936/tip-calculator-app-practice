@@ -17,14 +17,15 @@ jobs:
         run: git fetch --prune
 
       - name: Read current package.json version
-        id: determine-version
+        id: find-existing-version
         run: |
           version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
           echo $version
-
+          echo "existing_version=$version" >> $GITHUB_OUTPUT
       - name: Determine new version
         id: determine-new-version
         run: |
+          version="${{ steps.find-existing-version.outputs.version }}"
           if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             version_parts=(${version//./ })
             middle_part=$((version_parts[1] + 1))
