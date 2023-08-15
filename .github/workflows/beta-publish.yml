@@ -16,12 +16,15 @@ jobs:
       - name: Fetch latest changes
         run: git fetch --prune
 
-      - name: Read package.json
+      - name: Read current package.json version
         id: determine-version
         run: |
           version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
           echo $version
-          
+
+      - name: Determine new version
+        id: determine-new-version
+        run: |
           if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             version_parts=(${version//./ })
             middle_part=$((version_parts[1] + 1))
@@ -34,7 +37,7 @@ jobs:
             exit 1
           fi
           
-          echo "::set-output name=new_version::$new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
       - name: Commit and push changes
         env:
@@ -50,7 +53,7 @@ jobs:
           github_sha="${{ github.sha }}"
           trimmed_sha="${github_sha::5}"
 
-          new_version="${{ steps.determine-version.outputs.new_version }}-beta.${trimmed_sha}"
+          new_version="${{ steps.determine-new-version.outputs.new_version }}-beta.${trimmed_sha}"
           
           jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
