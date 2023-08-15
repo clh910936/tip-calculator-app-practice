@@ -8,9 +8,6 @@ on:
 jobs:
   read-package-json:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.read-json.outputs.version }}
-      commit_message: ${{ steps.update-package-json.outputs.commit_message }}
 
     steps:
       - name: Checkout code
@@ -22,13 +19,8 @@ jobs:
       - name: Read package.json
         id: read-json
         run: |
-          echo "::set-output name=version::$(cat package.json | grep -oP '(?<="version": ")[^"]+')"
-          echo "Version: ${{ steps.read-json.outputs.version }}"
-
-      - name: Determine new version
-        id: determine-version
-        run: |
-          version="${{ steps.read-json.outputs.version }}"
+          version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
+          echo $version
           
           if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             version_parts=(${version//./ })
