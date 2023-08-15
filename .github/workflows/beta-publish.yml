@@ -25,7 +25,7 @@ jobs:
       - name: Determine new version
         id: determine-new-version
         run: |
-          version="${{ steps.find-existing-version.outputs.version }}"
+          version="${{ steps.find-existing-version.outputs.existing_version }}"
           if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             version_parts=(${version//./ })
             middle_part=$((version_parts[1] + 1))
