@@ -75,9 +75,9 @@ jobs:
           git tag $new_version -m "Publishing $new_version"
           git push origin HEAD
           git push --tags
-      - name: Setup npm creds
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
+      # - name: Setup npm creds
+      #   run: |
+      #     echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> .npmrc
       - name: Publish new tag
         run: |
-          npm ci && npm publish --tag beta
+          npm publish --tag beta
