@@ -8,9 +8,9 @@ on:
 jobs:
   read-package-json:
     runs-on: ubuntu-latest
-    # permissions:
+    permissions:
     #   contents: read
-    #   packages: write
+      packages: write
 
     steps:
       - name: Checkout code
