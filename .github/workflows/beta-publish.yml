@@ -67,7 +67,7 @@ jobs:
           git add package.json
           git commit -m "Updating dev version to ${{ steps.determine-new-version.outputs.new_version }}"
           git push
-      - name: Publish new tag
+      - name: Push new tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -75,4 +75,9 @@ jobs:
           git tag $new_version -m "Publishing $new_version"
           git push origin HEAD
           git push --tags
-          npm publish --tag beta
+      - name: Setup npm creds
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
+      - name: Publish new tag
+        run: |
+          npm ci && npm publish --tag beta
