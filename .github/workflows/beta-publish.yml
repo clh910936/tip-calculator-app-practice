@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Print
         run: |
-          echo "${{toJson(github.event)}}"
+          echo "${{toJson(github)}}"
 
       - name: Fetch latest changes
         run: git fetch --prune
