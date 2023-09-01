@@ -16,9 +16,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Print
-        run: |
-          echo "${{toJson(github)}}"
 
       - name: Fetch latest changes
         run: git fetch --prune
@@ -86,7 +83,7 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            New version dev published: v${{ steps.determine-new-version.outputs.new_version }}
+            New version dev published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})
           pr_number: ${{ github.event.number }}
       # - name: Setup for publish
       #   uses: actions/checkout@v3
