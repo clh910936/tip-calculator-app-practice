@@ -6,7 +6,7 @@ on:
       - beta
 
 jobs:
-  read-package-json:
+  publish-tag:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -79,7 +79,7 @@ jobs:
           git tag $new_version -m "Publishing $new_version"
           git push origin HEAD
           git push --tags
-      - name: Comment PR
+      - name: Comment version on PR
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
@@ -87,14 +87,14 @@ jobs:
           pr_number: ${{ github.event.number }}
       # - name: Setup for publish
       #   uses: actions/checkout@v3
-      # # Setup .npmrc file to publish to GitHub Packages
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '16.x'
-      #     registry-url: 'https://npm.pkg.github.com'
-      #     # Defaults to the user or organization that owns the workflow file
-      #     scope: '@octocat'
-      # - run: npm ci
-      # - run: npm publish --tag beta
-        # env:
-        #   NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Setup .npmrc file to publish to GitHub Packages
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@octocat'
+      - run: npm i
+      - run: npm publish --tag beta
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
