@@ -1,9 +1,13 @@
+# On a PR into `beta` this:
+# - Updates the package.json version with a new beta version, ending in the last 5 of the commit sha
+# - Pushes the new version to the PR branch
+# - Creates a new tag with the new version
+# - Publishes the tag
+
 name: Publish beta development tag
 
 on:
-  pull_request:
-    branches:
-      - beta
+  workflow_dispatch:
 
 jobs:
   publish-tag:
@@ -16,6 +20,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      - name: Print
+        run: |
+          echo "${{toJSON(github.event)}}"
 
       - name: Fetch latest changes
         run: git fetch --prune
@@ -30,20 +38,22 @@ jobs:
         id: determine-new-version
         run: |
           version="${{ steps.find-existing-version.outputs.existing_version }}"
+          # Existing version is of format vdd.dd.dd, incremented the last digit
           if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             version_parts=(${version//./ })
             middle_part=$((version_parts[1] + 1))
             new_version_number="${version_parts[0]}.${middle_part}.${version_parts[2]}"
+          # Existing version is of format vdd.dd.dd-beta.{GITHUB_SHA}, extracts the dd.dd.dd part, does not increment
           elif [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+-beta\.[A-Za-z0-9]+$ ]]; then
             new_version_number="${version%-*}"
           else
             echo "Invalid version format, needs to be dd.dd.dd OR dd.dd.dd-beta.{GITHUB_SHA}"
             exit 1
           fi
-          echo $new_version_number
           github_sha="${{ github.sha }}"
           trimmed_sha="${github_sha::5}"
 
+          # append the last 5 of the commit sha to the version
           new_version="${new_version_number}-beta.${trimmed_sha}"
           
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
@@ -59,7 +69,6 @@ jobs:
       - name: Update package.json
         id: update-package-json
         run: |
-
           new_version="${{ steps.determine-new-version.outputs.new_version }}"
           jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
