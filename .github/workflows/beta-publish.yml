@@ -14,6 +14,9 @@ jobs:
       pull-requests: write # Needed to comment on PRs
 
     steps:
+      - name: Print
+        run: |
+          echo "${{toJSON(github.event)}}"
       - name: Checkout code
         uses: actions/checkout@v3
 
