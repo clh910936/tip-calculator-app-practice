@@ -1,0 +1,23 @@
+on:
+  pull_request:
+    types:
+      - ready_for_review
+
+jobs:
+  label_issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Print
+        run: |
+          echo "${{toJSON(github.event)}}"
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ["triage"]
+            })
