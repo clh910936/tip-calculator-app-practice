@@ -99,8 +99,8 @@ jobs:
           github_sha="${{ github.sha }}"
           trimmed_sha="${github_sha::5}"
 
-          # append the last 5 of the commit sha to the version
-          new_version="${new_version_number}-beta.${trimmed_sha}"
+          # append the target branch and the first 5 of the sha to the version
+          new_version="${new_version_number}-${{ github.base_ref }}.${trimmed_sha}"
 
           echo "New version: $new_version"
           echo "Target branch: ${{ github.base_ref }}"
