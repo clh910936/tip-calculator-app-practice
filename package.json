@@ -1,6 +1,6 @@
 {
   "name": "tip-calculator-app-practice",
-  "version": "0.5.1-beta.7815c",
+  "version": "0.5.1-beta.3272e",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
