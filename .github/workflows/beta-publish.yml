@@ -89,7 +89,7 @@ jobs:
           # if the target branch version and the PR's version are the same, increment the patch version
           if [[ $version_pr == $version_target ]]; then
             echo "The 'version' key in package.json is the same. Need to increment"
-            new_version_number="${pr_version_match%.*}.$((${pr_version_match##*.}+1))"
+            new_version_number="${new_version_number%.*}.$((${new_version_number##*.}+1))"
             echo "Version in PR branch: $version_pr"
             echo "Version in main branch: $version_target"
             echo "Incremented version: $new_version_number"
