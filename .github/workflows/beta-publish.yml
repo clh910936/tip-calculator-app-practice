@@ -7,7 +7,9 @@
 name: Publish beta development tag
 
 on:
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - beta
 
 jobs:
   publish-tag:
@@ -20,7 +22,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Print
         run: |
           echo "${{toJSON(github.event)}}"
@@ -84,7 +86,7 @@ jobs:
 
           # append the last 5 of the commit sha to the version
           new_version="${new_version_number}-beta.${trimmed_sha}"
-          
+
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
       - name: Configure Git
@@ -117,22 +119,20 @@ jobs:
           git tag $new_version -m "Publishing $new_version"
           git push origin HEAD
           git push --tags
-      - name: Comment version on PR
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            New version dev published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})
-          pr_number: ${{ github.event.number }}
-      # - name: Setup for publish
-      #   uses: actions/checkout@v3
-      # Setup .npmrc file to publish to GitHub Packages
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-          registry-url: 'https://npm.pkg.github.com'
-          # Defaults to the user or organization that owns the workflow file
-          scope: '@octocat'
-      - run: npm i
-      - run: npm publish --tag beta
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Comment version on PR
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     message: |
+      #       New dev version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})
+      #     pr_number: ${{ github.event.number }}
+      # # Setup .npmrc file to publish to GitHub Packages
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '16.x'
+      #     registry-url: 'https://npm.pkg.github.com'
+      #     # Defaults to the user or organization that owns the workflow file
+      #     scope: '@red-digital'
+      # - run: npm i
+      # - run: npm publish --tag beta
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
