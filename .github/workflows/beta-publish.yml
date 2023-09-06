@@ -101,8 +101,9 @@ jobs:
           # append the last 5 of the commit sha to the version
           new_version="${new_version_number}-beta.${trimmed_sha}"
 
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "New version: $new_version"
 
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
       - name: Configure Git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
