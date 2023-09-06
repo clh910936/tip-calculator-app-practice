@@ -50,7 +50,7 @@ jobs:
         run: |
           pr_version="${{ steps.read-json-pr.outputs.pr_version }}"
 
-          if [[ $pr_version =~ ^([0-9]+(\.[0-9]+)*)$ ]]; then
+          if [[ $pr_version =~ ^([0-9]+(\.[0-9]+)*) ]]; then
             pr_version_base="${BASH_REMATCH[0]}"
             echo "pr_version_base=$pr_version_base" >> $GITHUB_OUTPUT
           else
@@ -103,7 +103,6 @@ jobs:
           new_version="${new_version_number}-${{ github.base_ref }}.${trimmed_sha}"
 
           echo "New version: $new_version"
-          echo "Target branch: ${{ github.base_ref }}"
 
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
       - name: Configure Git
