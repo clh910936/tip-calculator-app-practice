@@ -103,7 +103,7 @@ jobs:
           new_version="${new_version_number}-beta.${trimmed_sha}"
 
           echo "New version: $new_version"
-          echo "Target branch: ${{ github.base_ref }}
+          echo "Target branch: ${{ github.base_ref }}"
 
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
       - name: Configure Git
