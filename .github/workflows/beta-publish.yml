@@ -43,44 +43,58 @@ jobs:
           git checkout $target_branch
           target_version=$(cat package.json | jq -r '.version')
           echo "target_branch_version=$target_version" >> $GITHUB_OUTPUT
-
-      - name: Compare versions
-        id: compare-versions
+      
+      - name: Extract base version
+        id: extract-base-version
         run: |
-          version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
-          version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
+          pr_version="${{ steps.read-json-pr.outputs.pr_version }}"
 
-          if [[ $version_pr != $version_target ]]; then
-            echo "The 'version' key in package.json is different between the PR branch and the main branch."
-            echo "Version in PR branch: $version_pr"
-            echo "Version in main branch: $version_target"
+          if [[ $pr_version =~ ^([1-9][0-9]*\.[1-9][0-9]*\.[1-9][0-9]*)$ ]]; then
+            pr_version_base="${BASH_REMATCH[1]}"
+            echo "pr_version_base=$pr_version_base" >> $GITHUB_OUTPUT
           else
-            echo "The 'version' key in package.json is the same between the PR branch and the main branch."
-            echo "Version: $version_pr"
+            echo "Invalid 'version' format in package.json. Expected format: DD.DD.DD where D is a digit 1-9."
+            exit 1
           fi
 
-      - name: Read current package.json version
-        id: find-existing-version
-        run: |
-          version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
-          echo $version
-          echo "existing_version=$version" >> $GITHUB_OUTPUT
+      # - name: Compare versions
+      #   id: compare-versions
+      #   run: |
+      #     version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
+      #     version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
+
+      #     if [[ $version_pr != $version_target ]]; then
+      #       echo "The 'version' key in package.json is different between the PR branch and the main branch."
+      #       echo "Version in PR branch: $version_pr"
+      #       echo "Version in main branch: $version_target"
+      #     else
+      #       echo "The 'version' key in package.json is the same between the PR branch and the main branch."
+      #       echo "Version: $version_pr"
+      #     fi
+
+      # - name: Read current package.json version
+      #   id: find-existing-version
+      #   run: |
+      #     version=$(cat package.json | grep -oP '(?<="version": ")[^"]+')
+      #     echo $version
+      #     echo "existing_version=$version" >> $GITHUB_OUTPUT
       - name: Determine new version
         id: determine-new-version
         run: |
-          version="${{ steps.find-existing-version.outputs.existing_version }}"
-          # Existing version is of format vdd.dd.dd, incremented the last digit
-          if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            version_parts=(${version//./ })
-            middle_part=$((version_parts[1] + 1))
-            new_version_number="${version_parts[0]}.${middle_part}.${version_parts[2]}"
-          # Existing version is of format vdd.dd.dd-beta.{GITHUB_SHA}, extracts the dd.dd.dd part, does not increment
-          elif [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+-beta\.[A-Za-z0-9]+$ ]]; then
-            new_version_number="${version%-*}"
+          new_version_number="${{ steps.extract-base-version.outputs.pr_version_base }}"
+
+          version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
+          version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
+
+          # if the target branch version and the PR's version are the same, increment the patch version
+          if [[ $version_pr == $version_target ]]; then
+            echo "The 'version' key in package.json is the same. Need to increment"
+            new_version_number="${pr_version_match%.*}.$((${pr_version_match##*.}+1))"
+            echo "Version in PR branch: $version_pr"
+            echo "Version in main branch: $version_target"
+            echo "Incremented version: $new_version_number"
           else
-            echo "Invalid version format, needs to be dd.dd.dd OR dd.dd.dd-beta.{GITHUB_SHA}"
-            exit 1
-          fi
+
           github_sha="${{ github.sha }}"
           trimmed_sha="${github_sha::5}"
 
