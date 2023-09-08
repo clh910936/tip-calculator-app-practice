@@ -115,7 +115,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           new_version="v${{ steps.determine-new-version.outputs.new_version }}"
-          git tag $new_version -m "Publishing $new_version"
+          git tag $new_version -m "Publishing $new_version for branch ${{ github.base_ref }}"
           git push origin HEAD
           git push --tags
       # Setup .npmrc file to publish to GitHub Packages
@@ -139,6 +139,6 @@ jobs:
         if: ${{ failure() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: ":x: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
+          message: ":warning: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
           pr_number: ${{ github.event.number }}
 
