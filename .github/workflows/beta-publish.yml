@@ -115,20 +115,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           new_version="v${{ steps.determine-new-version.outputs.new_version }}"
-          git tag $new_version -m "Publishing $new_version for branch ${{ github.base_ref }}" -a "annotation"
+          git tag $new_version -m "Publishing $new_version for branch ${{ github.base_ref }}"
           git push origin HEAD
           git push --tags
       # Setup .npmrc file to publish to GitHub Packages
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '18.x'
-      #     registry-url: 'https://npm.pkg.github.com'
-      #     # Defaults to the user or organization that owns the workflow file
-      #     scope: '@red-digital'
-      # - run: npm i
-      # - run: npm publish --tag ${{ github.base_ref }}
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@red-digital'
+      - run: npm i
+      - run: npm publish --tag ${{ github.base_ref }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Success Comment version on PR
         if: ${{ success() }}
         uses: thollander/actions-comment-pull-request@v2
