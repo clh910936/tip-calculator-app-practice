@@ -133,6 +133,7 @@ jobs:
           else
             comment_message="New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
           fi
+          echo "$comment_message"
           echo "comment_message=$comment_message" >> $GITHUB_OUTPUT
       - name: Comment version on PR
         if: ${{ always() }}
