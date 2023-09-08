@@ -30,7 +30,7 @@ jobs:
 
       - name: Print
         run: |
-          echo "${{toJSON(github.event)}}"
+          echo "${{toJson(github)}}"
 
       - name: Fetch latest changes
         run: git fetch --prune
