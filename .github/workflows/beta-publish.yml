@@ -139,6 +139,6 @@ jobs:
         if: ${{ failure() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: ":warning: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
+          message: ":x: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
           pr_number: ${{ github.event.number }}
 
