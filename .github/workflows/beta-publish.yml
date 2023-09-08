@@ -114,17 +114,17 @@ jobs:
           git tag $new_version -m "Publishing $new_version"
           git push origin HEAD
           git push --tags
-      # Setup .npmrc file to publish to GitHub Packages
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          registry-url: 'https://npm.pkg.github.com'
-          # Defaults to the user or organization that owns the workflow file
-          scope: '@red-digital'
-      - run: npm i
-      - run: npm publish --tag ${{ github.base_ref }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # # Setup .npmrc file to publish to GitHub Packages
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '18.x'
+      #     registry-url: 'https://npm.pkg.github.com'
+      #     # Defaults to the user or organization that owns the workflow file
+      #     scope: '@red-digital'
+      # - run: npm i
+      # - run: npm publish --tag ${{ github.base_ref }}
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set comment message variable
         if: ${{ always() }}
         id: set-comment-message
