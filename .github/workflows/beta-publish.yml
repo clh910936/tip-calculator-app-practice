@@ -134,8 +134,10 @@ jobs:
         id: set-comment-message
         run: |
           if [[ ${{ steps.set-failure-flag.outputs.failed == 'true' }} ]]; then
+            echo "something failed"
             comment_message=":warning: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
           else
+            echo "everything went well"
             comment_message=":white-check-mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
           fi
           echo "$comment_message"
