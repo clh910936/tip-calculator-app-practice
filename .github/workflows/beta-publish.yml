@@ -125,10 +125,18 @@ jobs:
       - run: npm publish --tag ${{ github.base_ref }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set comment message variable
+        id: set-comment-message
+        run: |
+          if [[ ${{ steps.set-failure-flag.outputs.failed == 'true' }} ]]; then
+            comment_message="Error: Something went wrong during the workflow execution."
+          else
+            comment_message="New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
+          fi
+          echo "comment_message=$comment_message" >> $GITHUB_OUTPUT
       - name: Comment version on PR
         if: ${{ always() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: |
-            ${{ if steps.set-failure-flag.outputs.failed }}Error: Something went wrong during the workflow execution.{{ else }}New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }}){{ endif }}
+          message: ${{ steps.set-comment-message.outputs.comment_message }}
           pr_number: ${{ github.event.number }}
