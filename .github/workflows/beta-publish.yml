@@ -28,9 +28,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Print
-        run: |
-          echo "${{toJson(github)}}"
+      # - name: Print
+      #   run: |
+      #     echo "${{toJson(github)}}"
 
       - name: Fetch latest changes
         run: git fetch --prune
@@ -134,7 +134,7 @@ jobs:
         id: set-comment-message
         run: |
           if [[ ${{ steps.set-failure-flag.outputs.failed == 'true' }} ]]; then
-            comment_message=":warning: **Publish version workflow:** Something went wrong during the workflow execution, no new version was published."
+            comment_message=":warning: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
           else
             comment_message=":white-check-mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
           fi
