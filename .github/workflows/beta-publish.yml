@@ -115,7 +115,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           new_version="v${{ steps.determine-new-version.outputs.new_version }}"
-          git tag $new_version -m "Publishing $new_version for branch ${{ github.base_ref }}"
+          git tag $new_version -m "Publishing $new_version for branch ${{ github.base_ref }}" -a "annotation"
           git push origin HEAD
           git push --tags
       # Setup .npmrc file to publish to GitHub Packages
