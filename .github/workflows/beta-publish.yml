@@ -78,7 +78,6 @@ jobs:
           fi
 
           github_sha="${{ github.event.pull_request.head.sha }}"
-          echo "sha: $github_sha"
           trimmed_sha="${github_sha::5}"
 
           # append the target branch and the first 5 of the sha to the version
@@ -95,23 +94,13 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout ${{ github.head_ref }}
 
-      # only update the package.json version if there's a new incremented number
+      # updating package.json with the temp version (XX.XX.XX-branch.sha)
       - name: Update package.json
         id: update-package-json
-        if: steps.determine-new-version.outputs.new_version_number
         run: |
-          new_version_number="${{ steps.determine-new-version.outputs.new_version_number }}"
-          jq --arg new_version_number "$new_version_number" '.version = $new_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
+          new_version="${{ steps.determine-new-version.outputs.new_version }}"
+          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
-   # only update the package.json version if there's a new incremented number
-      - name: Commit and push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.determine-new-version.outputs.new_version_number
-        run: |
-          git add package.json
-          git commit -m "Incrementing package.json version in prep for merge. Incremented to: v${{ steps.determine-new-version.outputs.new_version_number }}"
-          git push
 
       - name: Push new tag
         env:
@@ -122,7 +111,7 @@ jobs:
           git push origin HEAD
           git push --tags
 
-      # Setup .npmrc file to publish to GitHub Packages
+      # # Setup .npmrc file to publish to GitHub Packages
       # - uses: actions/setup-node@v3
       #   with:
       #     node-version: '18.x'
@@ -134,12 +123,31 @@ jobs:
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+            # updating package.json with the temp version (XX.XX.XX-branch.sha)
+      - name: Update package.json
+        id: update-package-json-base
+        if: steps.determine-new-version.outputs.new_version_number
+        run: |
+          new_version_number="${{ steps.determine-new-version.outputs.new_version_number }}"
+          jq --arg new_version_number "$new_version_number" '.version = $new_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
+          cat package.json
+       # only update the package.json version if there's a new incremented number
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.determine-new-version.outputs.new_version_number
+        run: |
+          git add package.json
+          git commit -m "Incrementing package.json version in prep for eventual merge. Incremented to: v${{ steps.determine-new-version.outputs.new_version_number }}"
+          git push
+
       - name: Success Comment version on PR
         if: ${{ success() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: ":white_check_mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
           pr_number: ${{ github.event.number }}
+
 
       - name: Failure Comment on PR
         if: ${{ failure() }}
