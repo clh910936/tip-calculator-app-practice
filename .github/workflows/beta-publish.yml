@@ -28,10 +28,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # - name: Print
-      #   run: |
-      #     echo "${{toJson(github)}}"
-
       - name: Fetch latest changes
         run: git fetch --prune
 
@@ -78,9 +74,11 @@ jobs:
             echo "Version in PR branch: $version_pr"
             echo "Version in main branch: $version_target"
             echo "Incremented version: $new_version_number"
+            echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
           fi
 
           github_sha="${{ github.sha }}"
+          echo "sha: $github_sha"
           trimmed_sha="${github_sha::5}"
 
           # append the target branch and the first 5 of the sha to the version
@@ -88,6 +86,7 @@ jobs:
 
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
       - name: Configure Git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,20 +95,24 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout ${{ github.head_ref }}
 
+      # only update the package.json version if there's a new incremented number
       - name: Update package.json
         id: update-package-json
+        if: steps.determine-new-version.outputs.new_version_number
         run: |
-          new_version="${{ steps.determine-new-version.outputs.new_version }}"
-          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
+          new_version_number="${{ steps.determine-new-version.outputs.new_version_number }}"
+          jq --arg new_version_number "$new_version_number" '.version = $new_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
-
+   # only update the package.json version if there's a new incremented number
       - name: Commit and push changes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.determine-new-version.outputs.new_version_number
         run: |
           git add package.json
-          git commit -m "Updating dev version to ${{ steps.determine-new-version.outputs.new_version }}"
+          git commit -m "Incrementing package.json version in prep for merge. Incremented to: v${{ steps.determine-new-version.outputs.new_version_number }}"
           git push
+
       - name: Push new tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -118,6 +121,7 @@ jobs:
           git tag $new_version -m "Published from branch: ${{ github.head_ref }}"
           git push origin HEAD
           git push --tags
+
       # Setup .npmrc file to publish to GitHub Packages
       # - uses: actions/setup-node@v3
       #   with:
@@ -129,16 +133,17 @@ jobs:
       # - run: npm publish --tag ${{ github.base_ref }}
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Success Comment version on PR
         if: ${{ success() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: ":white_check_mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
           pr_number: ${{ github.event.number }}
-      - name: Failure Comment version on PR
+
+      - name: Failure Comment on PR
         if: ${{ failure() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: ":warning: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
           pr_number: ${{ github.event.number }}
-
