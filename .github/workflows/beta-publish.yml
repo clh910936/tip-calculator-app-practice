@@ -148,7 +148,6 @@ jobs:
           message: ":white_check_mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
           pr_number: ${{ github.event.number }}
 
-
       - name: Failure Comment on PR
         if: ${{ failure() }}
         uses: thollander/actions-comment-pull-request@v2
