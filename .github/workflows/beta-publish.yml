@@ -9,7 +9,6 @@
 # - Publishes the tag
 
 name: Publish Version
-
 on:
   pull_request:
     branches:
@@ -157,7 +156,7 @@ jobs:
           message: "${{ steps.set-success-comment.outputs.success_message }}"
           pr_number: ${{ github.event.number }}
 
-          
+
       - name: Failure Comment on PR
         if: ${{ failure() }}
         uses: thollander/actions-comment-pull-request@v2
