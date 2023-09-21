@@ -9,6 +9,7 @@
 # - Publishes the tag
 
 name: Publish Version
+
 on:
   pull_request:
     branches:
