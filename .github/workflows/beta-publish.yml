@@ -74,10 +74,12 @@ jobs:
             echo "Version in PR branch: $version_pr"
             echo "Version in main branch: $version_target"
             echo "Incremented version: $new_version_number"
-            echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
           else
             new_version_number=""
           fi
+
+          echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
+
 
           github_sha="${{ github.event.pull_request.head.sha }}"
           trimmed_sha="${github_sha::5}"
