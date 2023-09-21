@@ -142,11 +142,11 @@ jobs:
         id: set-success-comment
         if: ${{ success() }}
         run: |
-          message=":white_check_mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
+          message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
 
           if [[ ${{ steps.determine-new-version.outputs.new_version_number }} ]]; then
             # append a new string to the end of the $message variable
-            message="$message <br> :white_check_mark: **Incremented version:** updated the package.json version to: v${{ steps.determine-new-version.outputs.new_version_number }} in prep for eventual merge. This can also be done manually in a commit and the action won't increment."
+            message="$message <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: v${{ steps.determine-new-version.outputs.new_version_number }} in prep for eventual merge. This can also be done manually in a commit and the action won't increment."
           fi
           echo "success_message=$message" >> $GITHUB_OUTPUT
 
