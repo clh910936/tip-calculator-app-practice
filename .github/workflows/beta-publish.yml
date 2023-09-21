@@ -46,7 +46,7 @@ jobs:
           echo "target_branch_version=$target_version" >> $GITHUB_OUTPUT
 
       - name: Extract base version
-        id: extract-base-version
+        id: extract-version-number
         run: |
           pr_version="${{ steps.read-json-pr.outputs.pr_version }}"
 
@@ -61,7 +61,7 @@ jobs:
       - name: Determine new version
         id: determine-new-version
         run: |
-          new_version_number="${{ steps.extract-base-version.outputs.pr_version_base }}"
+          new_version_number="${{ steps.extract-version-number.outputs.pr_version_base }}"
 
           version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
           version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
@@ -86,14 +86,6 @@ jobs:
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
-      - name: Configure Git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git checkout ${{ github.head_ref }}
-
       # updating package.json with the temp version (XX.XX.XX-branch.sha)
       - name: Update package.json
         id: update-package-json
@@ -101,6 +93,14 @@ jobs:
           new_version="${{ steps.determine-new-version.outputs.new_version }}"
           jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
+
+      - name: Configure Git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git checkout ${{ github.head_ref }}
 
       - name: Push new tag
         env:
@@ -123,29 +123,38 @@ jobs:
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            # updating package.json with the temp version (XX.XX.XX-branch.sha)
+      # if the version was incremented, update the package.json in the PR branch and commit that
       - name: Update package.json
         id: update-package-json-base
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: steps.determine-new-version.outputs.new_version_number
         run: |
           new_version_number="${{ steps.determine-new-version.outputs.new_version_number }}"
           jq --arg new_version_number "$new_version_number" '.version = $new_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
-       # only update the package.json version if there's a new incremented number
-      - name: Commit and push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.determine-new-version.outputs.new_version_number
-        run: |
+
           git add package.json
           git commit -m "Incrementing package.json version in prep for eventual merge. Incremented to: v${{ steps.determine-new-version.outputs.new_version_number }}"
           git push
+
+      - name: Set Success Comment
+        id: set-success-comment
+        if: ${{ success() }}
+        run: |
+          message=":white_check_mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
+
+          if [[ ${{ steps.determine-new-version.outputs.new_version_number }} ]]; then
+            # append a new string to the end of the $message variable
+            message="$message\n\n Incremented the version in the PR branch to: v${{ steps.determine-new-version.outputs.new_version_number }} in prep for eventual merge."
+          fi
+          echo "success_message=$message" >> $GITHUB_OUTPUT
 
       - name: Success Comment version on PR
         if: ${{ success() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: ":white_check_mark: **Publish version workflow:** New version published: [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
+          message: "${{ steps.set-success-comment.outputs.success_message }}"
           pr_number: ${{ github.event.number }}
 
       - name: Failure Comment on PR
