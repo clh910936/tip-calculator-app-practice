@@ -86,14 +86,6 @@ jobs:
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
-      # updating package.json with the temp version (XX.XX.XX-branch.sha)
-      - name: Update package.json
-        id: update-package-json
-        run: |
-          new_version="${{ steps.determine-new-version.outputs.new_version }}"
-          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
-          cat package.json
-
       - name: Configure Git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -101,6 +93,14 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout ${{ github.head_ref }}
+
+      # updating package.json with the temp version (XX.XX.XX-branch.sha)
+      - name: Update package.json
+        id: update-package-json
+        run: |
+          new_version="${{ steps.determine-new-version.outputs.new_version }}"
+          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
+          cat package.json
 
       - name: Push new tag
         env:
