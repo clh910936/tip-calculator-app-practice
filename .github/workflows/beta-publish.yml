@@ -62,6 +62,7 @@ jobs:
         id: determine-new-version
         run: |
           new_version_number="${{ steps.extract-version-number.outputs.pr_version_base }}"
+          incremented_number=""
 
           version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
           version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
@@ -73,13 +74,9 @@ jobs:
             new_version_number="${new_version_number%.*}.$((${new_version_number##*.}+1))"
             echo "Version in PR branch: $version_pr"
             echo "Version in main branch: $version_target"
-            echo "Incremented version: $new_version_number"
-          else
-            new_version_number=""
+            incremented_number=$new_version_number
+            echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
           fi
-
-          echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
-
 
           github_sha="${{ github.event.pull_request.head.sha }}"
           trimmed_sha="${github_sha::5}"
@@ -89,6 +86,8 @@ jobs:
 
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "incremented_version_number=$incremented_version_number" >> $GITHUB_OUTPUT
+
 
       - name: Configure Git
         env:
@@ -148,9 +147,9 @@ jobs:
         run: |
           message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
 
-          if [[ ${{ steps.determine-new-version.outputs.new_version_number }} != '' ]]; then
+          if [[ ${{ steps.determine-new-version.outputs.incremented_version_number }} !== '' ]]; then
             # append a new string to the end of the $message variable
-            message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.new_version_number }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
+            message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.incremented_version_number }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
           fi
           echo "success_message=$message" >> $GITHUB_OUTPUT
 
