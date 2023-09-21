@@ -146,7 +146,7 @@ jobs:
 
           if [[ ${{ steps.determine-new-version.outputs.new_version_number }} ]]; then
             # append a new string to the end of the $message variable
-            message="$message <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: v${{ steps.determine-new-version.outputs.new_version_number }} in prep for eventual merge. This can also be done manually in a commit and the action won't increment."
+            message="$message <br><br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.new_version_number }}**. This is only done when the package.json version matches the target branch's version and is done in preparation for the eventual merge."
           fi
           echo "success_message=$message" >> $GITHUB_OUTPUT
 
