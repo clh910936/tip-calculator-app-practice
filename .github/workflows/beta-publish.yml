@@ -62,7 +62,7 @@ jobs:
         id: determine-new-version
         run: |
           new_version_number="${{ steps.extract-version-number.outputs.pr_version_base }}"
-          incremented_number=""
+          incremented_version_number=""
 
           version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
           version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
@@ -74,7 +74,7 @@ jobs:
             new_version_number="${new_version_number%.*}.$((${new_version_number##*.}+1))"
             echo "Version in PR branch: $version_pr"
             echo "Version in main branch: $version_target"
-            incremented_number=$new_version_number
+            incremented_version_number=$new_version_number
             echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
           fi
 
