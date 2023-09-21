@@ -146,7 +146,7 @@ jobs:
 
           if [[ ${{ steps.determine-new-version.outputs.new_version_number }} ]]; then
             # append a new string to the end of the $message variable
-            message="$message\n\n Incremented the version in the PR branch to: v${{ steps.determine-new-version.outputs.new_version_number }} in prep for eventual merge."
+            message="$message <br> Incremented the version in the PR branch to: v${{ steps.determine-new-version.outputs.new_version_number }} in prep for eventual merge."
           fi
           echo "success_message=$message" >> $GITHUB_OUTPUT
 
