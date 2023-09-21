@@ -135,7 +135,7 @@ jobs:
           cat package.json
 
           git add package.json
-          git commit -m "Incrementing package.json version in prep for eventual merge. Incremented to: v${{ steps.determine-new-version.outputs.new_version_number }}"
+          git commit -m "Incrementing package.json to v${{ steps.determine-new-version.outputs.new_version_number }} in preparation for eventual merge"
           git push
 
       - name: Set Success Comment
