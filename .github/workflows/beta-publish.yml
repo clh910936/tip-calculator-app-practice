@@ -102,9 +102,23 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout ${{ github.head_ref }}
 
-      # updating package.json with the temp version (XX.XX.XX-branch.sha)
-      - name: Update package.json
-        id: update-package-json
+      # if the version was incremented, update the package.json in the PR branch and commit that
+      - name: Update base version and save package.json
+        id: update-package-json-base
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.determine-new-version.outputs.new_version_number
+        run: |
+          new_version_number="${{ steps.determine-new-version.outputs.new_version_number }}"
+          jq --arg new_version_number "$new_version_number" '.version = $new_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
+          cat package.json
+
+          git add package.json
+          git commit -m "Incrementing package.json to v${{ steps.determine-new-version.outputs.new_version_number }} in preparation for eventual merge"
+          git push
+
+      - name: Update package.json with temporary version (XX.XX.XX-branch.sha)
+        id: temp-update-package-json
         run: |
           new_version="${{ steps.determine-new-version.outputs.new_version }}"
           jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
@@ -130,21 +144,6 @@ jobs:
       # - run: npm publish --tag ${{ github.base_ref }}
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # if the version was incremented, update the package.json in the PR branch and commit that
-      - name: Update package.json
-        id: update-package-json-base
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.determine-new-version.outputs.new_version_number
-        run: |
-          new_version_number="${{ steps.determine-new-version.outputs.new_version_number }}"
-          jq --arg new_version_number "$new_version_number" '.version = $new_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
-          cat package.json
-
-          git add package.json
-          git commit -m "Incrementing package.json to v${{ steps.determine-new-version.outputs.new_version_number }} in preparation for eventual merge"
-          git push
 
       - name: Set Success Comment
         id: set-success-comment
