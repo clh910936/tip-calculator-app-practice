@@ -32,27 +32,27 @@ jobs:
         run: git fetch --prune
 
       - name: Read package.json in PR branch
-        id: read-json-pr
+        id: read-pr-package-json
         run: |
           pr_version=$(cat package.json | jq -r '.version')
           echo "pr_version=$pr_version" >> $GITHUB_OUTPUT
 
       - name: Read package.json in target branch
-        id: read-json-target
+        id: read-target-package-json
         run: |
           target_branch="${{ github.event.pull_request.base.ref }}"
           git checkout $target_branch
           target_version=$(cat package.json | jq -r '.version')
           echo "target_branch_version=$target_version" >> $GITHUB_OUTPUT
 
-      - name: Extract base version
+      - name: Extract PR version number
         id: extract-version-number
         run: |
-          pr_version="${{ steps.read-json-pr.outputs.pr_version }}"
+          pr_version="${{ steps.read-pr-package-json.outputs.pr_version }}"
 
           if [[ $pr_version =~ ^([0-9]+(\.[0-9]+)*) ]]; then
-            pr_version_base="${BASH_REMATCH[0]}"
-            echo "pr_version_base=$pr_version_base" >> $GITHUB_OUTPUT
+            pr_version_number="${BASH_REMATCH[0]}"
+            echo "pr_version_number=$pr_version_number" >> $GITHUB_OUTPUT
           else
             echo "Invalid 'version' format in package.json. Expected format"
             exit 1
@@ -61,20 +61,19 @@ jobs:
       - name: Determine new version
         id: determine-new-version
         run: |
-          new_version_number="${{ steps.extract-version-number.outputs.pr_version_base }}"
+          new_version_number="${{ steps.extract-version-number.outputs.pr_version_number }}"
 
-          version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
-          version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
+          version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
+          version_target="${{ steps.read-target-package-json.outputs.target_branch_version }}"
 
           # if the target branch version and the PR's version are the same, increment the minor version
           # otherwise, use the version in the PR branch because it was manually incremented (ex major or patch version bump)
           if [[ $version_pr == $version_target ]]; then
-            echo "The 'version' key in package.json is the same. Need to increment"
+            echo "The 'version' key in package.json matches the target branch version. Need to increment"
             split_version=(${new_version_number//./ })
             incremented_minor=$((${split_version[1]}+1))
             new_version_number="${split_version[0]}.$incremented_minor.0"
 
-            # new_version_number="${new_version_number%.*}.$((${new_version_number##*.}+1))"
             echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
           fi
 
@@ -82,6 +81,7 @@ jobs:
           trimmed_sha="${github_sha::5}"
 
           # append the target branch and the first 5 of the sha to the version
+          # ex XX.XX.XX-branch.sha format
           new_version="${new_version_number}-${{ github.base_ref }}.${trimmed_sha}"
 
           echo "New version: $new_version"
@@ -96,7 +96,7 @@ jobs:
           git checkout ${{ github.head_ref }}
 
       # if the version was incremented, update the package.json in the PR branch and commit that
-      - name: Update base version and save package.json
+      - name: Update PR version number and save to package.json
         id: update-package-json-base
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -110,7 +110,7 @@ jobs:
           git commit -m "Incrementing package.json to v$incremented_version in preparation for eventual merge"
           git push
 
-      - name: Update package.json with temporary version (XX.XX.XX-branch.sha)
+      - name: Update (but not save) package.json with temporary version (XX.XX.XX-branch.sha)
         id: temp-update-package-json
         run: |
           new_version="${{ steps.determine-new-version.outputs.new_version }}"
