@@ -71,9 +71,6 @@ jobs:
           # otherwise, use the version in the PR branch because it was manually incremented (ex major or minor version bump)
           if [[ $version_pr == $version_target ]]; then
             echo "The 'version' key in package.json is the same. Need to increment"
-            # split new_version_number on "."
-            # increment the middle number by one
-            # concatenate the string back together
             split_version=(${new_version_number//./ })
             incremented_minor=$((${split_version[1]}+1))
             new_version_number="${split_version[0]}.$incremented_minor.0"
@@ -154,7 +151,7 @@ jobs:
 
           if [ ${{ steps.determine-new-version.outputs.new_version_number }} != "" ]; then
             # append a new string to the end of the $message variable
-            message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.incremented_version_number }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
+            message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.new_version_number }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
           fi
           echo "success_message=$message" >> $GITHUB_OUTPUT
 
