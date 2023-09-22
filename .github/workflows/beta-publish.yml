@@ -148,7 +148,7 @@ jobs:
           message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
           echo "${{steps.determine-new-version.outputs.incremented_version_number }}"
 
-          if [[ ${{ steps.determine-new-version.outputs.incremented_version_number }} !== "" ]]; then
+          if [[ ${{ steps.determine-new-version.outputs.incremented_version_number }} != "" ]]; then
             # append a new string to the end of the $message variable
             message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.incremented_version_number }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
           fi
