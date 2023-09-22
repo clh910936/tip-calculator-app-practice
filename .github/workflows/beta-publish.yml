@@ -62,13 +62,12 @@ jobs:
         id: determine-new-version
         run: |
           new_version_number="${{ steps.extract-version-number.outputs.pr_version_base }}"
-          incremented_version_number=""
 
           version_pr="${{ steps.read-json-pr.outputs.pr_version }}"
           version_target="${{ steps.read-json-target.outputs.target_branch_version }}"
 
-          # if the target branch version and the PR's version are the same, increment the patch version
-          # otherwise, use the version in the PR branch because it was manually incremented (ex major or minor version bump)
+          # if the target branch version and the PR's version are the same, increment the minor version
+          # otherwise, use the version in the PR branch because it was manually incremented (ex major or patch version bump)
           if [[ $version_pr == $version_target ]]; then
             echo "The 'version' key in package.json is the same. Need to increment"
             split_version=(${new_version_number//./ })
@@ -76,8 +75,7 @@ jobs:
             new_version_number="${split_version[0]}.$incremented_minor.0"
 
             # new_version_number="${new_version_number%.*}.$((${new_version_number##*.}+1))"
-            incremented_version_number=$new_version_number
-            echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
+            echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
           fi
 
           github_sha="${{ github.event.pull_request.head.sha }}"
@@ -88,8 +86,6 @@ jobs:
 
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
-          echo "incremented_version_number=$incremented_version_number" >> $GITHUB_OUTPUT
-
 
       - name: Configure Git
         env:
@@ -104,14 +100,14 @@ jobs:
         id: update-package-json-base
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.determine-new-version.outputs.new_version_number
+        if: steps.determine-new-version.outputs.incremented_version
         run: |
-          new_version_number="${{ steps.determine-new-version.outputs.new_version_number }}"
+          new_version_number="${{ steps.determine-new-version.outputs.incremented_version }}"
           jq --arg new_version_number "$new_version_number" '.version = $new_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
 
           git add package.json
-          git commit -m "Incrementing package.json to v${{ steps.determine-new-version.outputs.new_version_number }} in preparation for eventual merge"
+          git commit -m "Incrementing package.json to v${{ steps.determine-new-version.outputs.incremented_version }} in preparation for eventual merge"
           git push
 
       - name: Update package.json with temporary version (XX.XX.XX-branch.sha)
@@ -147,10 +143,9 @@ jobs:
         if: ${{ success() }}
         run: |
           message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
-          echo "${{steps.determine-new-version.outputs.new_version_number }}"
 
-          if [ ${{ steps.determine-new-version.outputs.new_version_number }} != "" ]; then
-            # append a new string to the end of the $message variable
+          # if the version was incremented and committed, add that to the success message
+          if [ ${{ steps.determine-new-version.outputs.incremented_version }} != "" ]; then
             message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.new_version_number }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
           fi
           echo "success_message=$message" >> $GITHUB_OUTPUT
