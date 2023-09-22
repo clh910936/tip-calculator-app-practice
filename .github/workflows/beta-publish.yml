@@ -71,9 +71,14 @@ jobs:
           # otherwise, use the version in the PR branch because it was manually incremented (ex major or minor version bump)
           if [[ $version_pr == $version_target ]]; then
             echo "The 'version' key in package.json is the same. Need to increment"
-            new_version_number="${new_version_number%.*}.$((${new_version_number##*.}+1))"
-            echo "Version in PR branch: $version_pr"
-            echo "Version in main branch: $version_target"
+            # split new_version_number on "."
+            # increment the middle number by one
+            # concatenate the string back together
+            split_version=(${new_version_number//./ })
+            incremented_minor=$((${split_version[1]}+1))
+            new_version_number="${split_version[0]}.$incremented_minor.${split_version[2]}"
+
+            # new_version_number="${new_version_number%.*}.$((${new_version_number##*.}+1))"
             incremented_version_number=$new_version_number
             echo "new_version_number=$new_version_number" >> $GITHUB_OUTPUT
           fi
