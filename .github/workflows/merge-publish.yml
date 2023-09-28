@@ -77,7 +77,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          new_version="v${{ steps.determine-new-version.outputs.new_version }}"
+          new_version="v${{ steps.determine-new-version.outputs.version_number }}"
           git tag $new_version -m "Published from branch: ${{ github.head_ref }}"
           git push origin HEAD
           git push --tags
