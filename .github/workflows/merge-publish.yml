@@ -61,7 +61,7 @@ jobs:
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git checkout ${{ github.head_ref }}
+          # git checkout ${{ github.head_ref }}
 
       # if the version was incremented, update the package.json in the PR branch and commit that
       - name: Update PR version number and save to package.json
