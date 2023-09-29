@@ -30,6 +30,7 @@ jobs:
       - name: Fetch latest changes
         run: git fetch --prune
 
+        
       - name: Read package.json in PR branch
         id: read-json-pr
         run: |
