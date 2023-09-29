@@ -1,0 +1,74 @@
+name: Create Draft Pull Request
+on: push
+
+permissions:
+  pull-requests: write
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Find jira number
+        id: find-jira-number
+        shell: bash
+        run: echo "JIRA_NUMBER=$(echo "$GITHUB_REF" | grep -o -P '([A-Za-z][A-Za-z0-9]+-[0-9]+)')" >> $GITHUB_OUTPUT
+      - name: Get formatted branch name
+        id: formatted-branch-name
+        shell: bash
+        run: |
+          formattedName=$(echo $GITHUB_REF | grep -o -P '(?!.*\/).+' | tr '-' ' ' | tr '_' ' ')
+          echo "FORMATTED_NAME=$formattedName" >> $GITHUB_OUTPUT
+      - name: Check if PR exists
+        id: pr-exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          defaultBranch=${{ github.event.repository.default_branch }}
+          prs=$(gh pr list \
+              --repo $GITHUB_REPOSITORY \
+              --base $defaultBranch \
+              --head ${GITHUB_REF#refs/heads/} \
+              --json baseRefName,headRefName )
+
+          if [ "$prs" != [] ]; then
+            echo "present"
+            echo "SKIP=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check if author label exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: '!steps.pr-exists.outputs.SKIP'
+          
+        run: |
+          author="${{github.event.pusher.name }}"
+          labelsList=$(gh label list --search "$author")
+          echo "$labelsList"
+          if [ "$labelsList" == "" ]; then
+            echo "label doesnt exist"
+            gh label create "$author" --description "PR author" --color "#3B2E58"
+          fi
+
+
+      - name: create pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: '!steps.pr-exists.outputs.SKIP'
+        run: |
+          defaultBranch=${{ github.event.repository.default_branch }}
+          jiraNumber="${{steps.find-jira-number.outputs.JIRA_NUMBER}}"
+          author="${{github.event.pusher.name }}"
+          finalTitle=""
+          # prepend title with jira number and formatting
+          if [ -n "$jiraNumber" ]; then
+            finalTitle+="$jiraNumber | "
+          fi
+          formattedTitle="${{steps.formatted-branch-name.outputs.FORMATTED_NAME}}"
+          finalTitle+="$formattedTitle"
+          gh pr create -B ${defaultBranch} -H ${GITHUB_REF} --draft --title "$finalTitle" --label "$author" --body-file .github/pull_request_template.md
