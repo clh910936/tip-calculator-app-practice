@@ -1,16 +1,18 @@
 # On a PR into `beta` or 'alpha' this:
-# - Checks if the version in the PR branch is the same as the version in the target branch
-#   - If it is, it will increment the minor version and commit that update to the PR branch
-#   - If it's not, ie someone manually incremented the version in the PR branch, it will use that PR version number
-# - Temporarily updates the package.json version with the base number from the previous step, adding in the target branch, and ending in the last 5 of the commit sha
-#   - ex. 0.1.4-beta.12345 or 0.1.4-alpha.12345
-# - Creates a new tag with the new version
-# - Publishes the tag
-# - Comments on the PR:
-  # - On workflow success: comments the released version (XX.XX.XX-branch.sha) and the incremented package.json version (if applicable)
-  # - On workflow failure: comments that the workflow failed and links to the workflow run
+#  1. Checks if the PR version is greater than or equal to the target branch, throws an error if less than
+#     - This is to prevent attempts to publish an old version, ex case is if the target branch had a new version published since the creation of the PR
+#  2.  Checks if the version in the PR branch is the same as the version in the target branch
+#     - If it is, it will increment the minor version and commit that update to the PR branch
+#     - If it's not, ie someone manually incremented the version in the PR branch, it will use that PR version number
+#  3.  Temporarily updates the package.json version with the base number from the previous step, adding in the target branch, and ending in the last 5 of the commit sha
+#     - ex. 0.1.4-beta.12345 or 0.1.4-alpha.12345
+#  4.  Creates a new tag with the new version
+#  5.  Publishes the tag
+#  6.  Comments on the PR:
+#     - On workflow success: comments the released version (XX.XX.XX-branch.sha) and the incremented package.json version (if applicable)
+#     - On workflow failure: comments that the workflow failed and links to the workflow run
 
-name: Publish Development Version
+name: Publish Development Version on PR
 
 on:
   pull_request:

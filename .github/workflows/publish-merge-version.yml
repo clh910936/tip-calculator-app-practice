@@ -1,6 +1,11 @@
+# On a merge into beta, alpha, or main the following happens:
+# 1. The PR's version is read from package.json and the format is checked
+# 2. If the target branch was alpha or beta, the version number is appended with the branch name (ex 1.0.0-alpha)
+# 3. The package.json in the PR branch is temporarily updated with the new version number
+    # The update is temporary because we don't want that branch name in the package.json, keeping it clean leaves that open for a formal version release on a merge to main
+# 4. The new version is tagged and published to the repo
 
-
-name: Publish Official Version
+name: Publish Version on Merge
 
 on:
   pull_request:
@@ -82,14 +87,22 @@ jobs:
           git push origin HEAD
           git push --tags
 
-      # # Setup .npmrc file to publish to GitHub Packages
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '18.x'
-      #     registry-url: 'https://npm.pkg.github.com'
-      #     # Defaults to the user or organization that owns the workflow file
-      #     scope: '@red-digital'
-      # - run: npm i
-      # - run: npm publish --tag ${{ github.base_ref }}
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Setup .npmrc file to publish to GitHub Packages
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@red-digital'
+      - run: |
+          # npm i
+          if [[ ${{ github.base_ref }} =~ ^(alpha|beta)$ ]]; then
+            # print npm publish tag command
+            echo "npm publish --tag ${{ github.base_ref }}"
+            # npm publish --tag ${{ github.base_ref }}
+          else
+            echo "npm publish --tag ${{ github.base_ref }}"
+            # npm publish
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
