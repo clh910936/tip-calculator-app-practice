@@ -1,6 +1,5 @@
-filter-by-commitish: true
-name-template: "v$RESOLVED_VERSION-beta"
-tag-template: "v$RESOLVED_VERSION-beta"
+name-template: "v$NEXT_PATCH_VERSION"
+tag-template: "v$NEXT_PATCH_VERSION"
 categories:
   - title: "🚀 Features"
     labels:
@@ -19,15 +18,3 @@ template: |
   **Previous Release:** $PREVIOUS_TAG
   ## What's Changed
   $CHANGES
-version-resolver:
-  major:
-    labels:
-      - 'major'
-  minor:
-    labels:
-      - 'minor'
-  patch:
-    labels:
-      - 'patch'
-  default: patch
-  
