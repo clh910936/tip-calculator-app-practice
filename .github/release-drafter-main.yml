@@ -1,6 +1,6 @@
+filter-by-commitish: true
 name-template: "v$RESOLVED_VERSION"
 tag-template: "v$RESOLVED_VERSION"
-filter-by-commitish: true
 categories:
   - title: "🚀 Features"
     labels:
