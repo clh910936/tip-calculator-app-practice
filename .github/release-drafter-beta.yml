@@ -1,8 +1,8 @@
 filter-by-commitish: true
 commitish: beta
 prelease: true
-name-template: "v$RESOLVED_VERSION-beta"
-tag-template: "v$RESOLVED_VERSION-beta"
+name-template: "v$COMPLETE"
+tag-template: "v$COMPLETE"
 categories:
   - title: "🚀 Features"
     labels:
