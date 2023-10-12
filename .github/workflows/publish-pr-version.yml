@@ -1,176 +1,176 @@
-# On a PR into `beta` or 'alpha' this:
-#  1. Checks if the PR version is greater than or equal to the target branch, throws an error if less than
-#     - This is to prevent attempts to publish an old version, ex case is if the target branch had a new version published since the creation of the PR
-#  2.  Checks if the version in the PR branch is the same as the version in the target branch
-#     - If it is, it will increment the minor version and commit that update to the PR branch
-#     - If it's not, ie someone manually incremented the version in the PR branch, it will use that PR version number
-#  3.  Temporarily updates the package.json version with the base number from the previous step, adding in the target branch, and ending in the last 5 of the commit sha
-#     - ex. 0.1.4-beta.12345 or 0.1.4-alpha.12345
-#  4.  Creates a new tag with the new version
-#  5.  Publishes the tag
-#  6.  Comments on the PR:
-#     - On workflow success: comments the released version (XX.XX.XX-branch.sha) and the incremented package.json version (if applicable)
-#     - On workflow failure: comments that the workflow failed and links to the workflow run
+# # On a PR into `beta` or 'alpha' this:
+# #  1. Checks if the PR version is greater than or equal to the target branch, throws an error if less than
+# #     - This is to prevent attempts to publish an old version, ex case is if the target branch had a new version published since the creation of the PR
+# #  2.  Checks if the version in the PR branch is the same as the version in the target branch
+# #     - If it is, it will increment the minor version and commit that update to the PR branch
+# #     - If it's not, ie someone manually incremented the version in the PR branch, it will use that PR version number
+# #  3.  Temporarily updates the package.json version with the base number from the previous step, adding in the target branch, and ending in the last 5 of the commit sha
+# #     - ex. 0.1.4-beta.12345 or 0.1.4-alpha.12345
+# #  4.  Creates a new tag with the new version
+# #  5.  Publishes the tag
+# #  6.  Comments on the PR:
+# #     - On workflow success: comments the released version (XX.XX.XX-branch.sha) and the incremented package.json version (if applicable)
+# #     - On workflow failure: comments that the workflow failed and links to the workflow run
 
-name: Publish Development Version on PR
+# name: Publish Development Version on PR
 
-on:
-  pull_request:
-    branches:
-      - beta
-      - alpha
+# on:
+#   pull_request:
+#     branches:
+#       - beta
+#       - alpha
 
-jobs:
-  publish-tag:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-      pull-requests: write # Needed to comment on PRs
+# jobs:
+#   publish-tag:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: write
+#       packages: write
+#       pull-requests: write # Needed to comment on PRs
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Fetch latest changes
-        run: git fetch --prune
+#       - name: Fetch latest changes
+#         run: git fetch --prune
 
-      - name: Read package.json in PR branch
-        id: read-pr-package-json
-        run: |
-          pr_version=$(cat package.json | jq -r '.version')
-          echo "pr_version=$pr_version" >> $GITHUB_OUTPUT
+#       - name: Read package.json in PR branch
+#         id: read-pr-package-json
+#         run: |
+#           pr_version=$(cat package.json | jq -r '.version')
+#           echo "pr_version=$pr_version" >> $GITHUB_OUTPUT
 
-      - name: Read package.json in target branch
-        id: read-target-package-json
-        run: |
-          target_branch="${{ github.event.pull_request.base.ref }}"
-          git checkout $target_branch
-          target_version=$(cat package.json | jq -r '.version')
-          echo "target_branch_version=$target_version" >> $GITHUB_OUTPUT
+#       - name: Read package.json in target branch
+#         id: read-target-package-json
+#         run: |
+#           target_branch="${{ github.event.pull_request.base.ref }}"
+#           git checkout $target_branch
+#           target_version=$(cat package.json | jq -r '.version')
+#           echo "target_branch_version=$target_version" >> $GITHUB_OUTPUT
 
-      - name: Extract PR branch version number
-        id: extract-version-number
-        run: |
-          pr_version="${{ steps.read-pr-package-json.outputs.pr_version }}"
+#       - name: Extract PR branch version number
+#         id: extract-version-number
+#         run: |
+#           pr_version="${{ steps.read-pr-package-json.outputs.pr_version }}"
 
-          if [[ $pr_version =~ ^([0-9]+(\.[0-9]+)*) ]]; then
-            pr_version_number="${BASH_REMATCH[0]}"
-            echo "pr_version_number=$pr_version_number" >> $GITHUB_OUTPUT
-          else
-            echo "Invalid 'version' format in package.json. Expected format"
-            exit 1
-          fi
+#           if [[ $pr_version =~ ^([0-9]+(\.[0-9]+)*) ]]; then
+#             pr_version_number="${BASH_REMATCH[0]}"
+#             echo "pr_version_number=$pr_version_number" >> $GITHUB_OUTPUT
+#           else
+#             echo "Invalid 'version' format in package.json. Expected format"
+#             exit 1
+#           fi
 
-      - name: Determine new version
-        id: determine-new-version
-        run: |
-          new_version_number="${{ steps.extract-version-number.outputs.pr_version_number }}"
+#       - name: Determine new version
+#         id: determine-new-version
+#         run: |
+#           new_version_number="${{ steps.extract-version-number.outputs.pr_version_number }}"
 
-          version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
-          version_target="${{ steps.read-target-package-json.outputs.target_branch_version }}"
+#           version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
+#           version_target="${{ steps.read-target-package-json.outputs.target_branch_version }}"
 
-          # package.json version in PR branch must be greater than or equal to the target branch version
-          if [[ $version_pr < $version_target ]]; then
-            echo "The 'version' key in package.json is less than the target branch version. This is not allowed. It's possible a new version has been published on the target branch since this code was written. Please update the package.json version."
-            exit 1
-          fi
+#           # package.json version in PR branch must be greater than or equal to the target branch version
+#           if [[ $version_pr < $version_target ]]; then
+#             echo "The 'version' key in package.json is less than the target branch version. This is not allowed. It's possible a new version has been published on the target branch since this code was written. Please update the package.json version."
+#             exit 1
+#           fi
 
-          # if the target branch version and the PR's version are the same, increment the minor version
-          # otherwise, use the version in the PR branch because it was manually incremented (ex major or patch version bump)
-          if [[ $version_pr == $version_target ]]; then
-            echo "The 'version' key in package.json matches the target branch version. Need to increment"
-            split_version=(${new_version_number//./ })
-            incremented_minor=$((${split_version[1]}+1))
-            new_version_number="${split_version[0]}.$incremented_minor.0"
+#           # if the target branch version and the PR's version are the same, increment the minor version
+#           # otherwise, use the version in the PR branch because it was manually incremented (ex major or patch version bump)
+#           if [[ $version_pr == $version_target ]]; then
+#             echo "The 'version' key in package.json matches the target branch version. Need to increment"
+#             split_version=(${new_version_number//./ })
+#             incremented_minor=$((${split_version[1]}+1))
+#             new_version_number="${split_version[0]}.$incremented_minor.0"
 
-            echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
-          fi
+#             echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
+#           fi
 
-          github_sha="${{ github.event.pull_request.head.sha }}"
-          trimmed_sha="${github_sha::5}"
+#           github_sha="${{ github.event.pull_request.head.sha }}"
+#           trimmed_sha="${github_sha::5}"
 
-          # append the target branch and the first 5 of the sha to the version
-          # ex XX.XX.XX-branch.sha format
-          new_version="${new_version_number}-${{ github.base_ref }}.${trimmed_sha}"
+#           # append the target branch and the first 5 of the sha to the version
+#           # ex XX.XX.XX-branch.sha format
+#           new_version="${new_version_number}-${{ github.base_ref }}.${trimmed_sha}"
 
-          echo "New version: $new_version"
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+#           echo "New version: $new_version"
+#           echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
-      - name: Configure Git
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git checkout ${{ github.head_ref }}
+#       - name: Configure Git
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           git config --global user.name "${{ github.actor }}"
+#           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+#           git checkout ${{ github.head_ref }}
 
-      # if the version was incremented, update the package.json in the PR branch and commit that
-      - name: Update PR version number and save to package.json
-        id: update-package-json-base
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.determine-new-version.outputs.incremented_version
-        run: |
-          incremented_version="${{ steps.determine-new-version.outputs.incremented_version }}"
-          jq --arg incremented_version "$incremented_version" '.version = $incremented_version' package.json > package.json.tmp && mv package.json.tmp package.json
-          cat package.json
+#       # if the version was incremented, update the package.json in the PR branch and commit that
+#       - name: Update PR version number and save to package.json
+#         id: update-package-json-base
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         if: steps.determine-new-version.outputs.incremented_version
+#         run: |
+#           incremented_version="${{ steps.determine-new-version.outputs.incremented_version }}"
+#           jq --arg incremented_version "$incremented_version" '.version = $incremented_version' package.json > package.json.tmp && mv package.json.tmp package.json
+#           cat package.json
 
-          git add package.json
-          git commit -m "Incrementing package.json to v$incremented_version in preparation for eventual merge"
-          git push
+#           git add package.json
+#           git commit -m "Incrementing package.json to v$incremented_version in preparation for eventual merge"
+#           git push
 
-      - name: Update (but not save) package.json with temporary version (XX.XX.XX-branch.sha)
-        id: temp-update-package-json
-        run: |
-          new_version="${{ steps.determine-new-version.outputs.new_version }}"
-          jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
-          cat package.json
+#       - name: Update (but not save) package.json with temporary version (XX.XX.XX-branch.sha)
+#         id: temp-update-package-json
+#         run: |
+#           new_version="${{ steps.determine-new-version.outputs.new_version }}"
+#           jq --arg new_version "$new_version" '.version = $new_version' package.json > package.json.tmp && mv package.json.tmp package.json
+#           cat package.json
 
-      - name: Push new tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          new_version="v${{ steps.determine-new-version.outputs.new_version }}"
-          git tag $new_version -m "Published from branch: ${{ github.head_ref }}"
-          git push origin HEAD
-          git push --tags
+#       - name: Push new tag
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           new_version="v${{ steps.determine-new-version.outputs.new_version }}"
+#           git tag $new_version -m "Published from branch: ${{ github.head_ref }}"
+#           git push origin HEAD
+#           git push --tags
 
-      # # Setup .npmrc file to publish to GitHub Packages
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: '18.x'
-      #     registry-url: 'https://npm.pkg.github.com'
-      #     # Defaults to the user or organization that owns the workflow file
-      #     scope: '@red-digital'
-      # - run: npm i
-      # - run: npm publish --tag ${{ github.base_ref }}
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       # # Setup .npmrc file to publish to GitHub Packages
+#       # - uses: actions/setup-node@v3
+#       #   with:
+#       #     node-version: '18.x'
+#       #     registry-url: 'https://npm.pkg.github.com'
+#       #     # Defaults to the user or organization that owns the workflow file
+#       #     scope: '@red-digital'
+#       # - run: npm i
+#       # - run: npm publish --tag ${{ github.base_ref }}
+#       #   env:
+#       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set Success Comment
-        id: set-success-comment
-        if: ${{ success() }}
-        run: |
-          message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
+#       - name: Set Success Comment
+#         id: set-success-comment
+#         if: ${{ success() }}
+#         run: |
+#           message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
 
-          # if the version was incremented and committed, add that to the success message
-          if [ ${{ steps.determine-new-version.outputs.incremented_version }} != "" ]; then
-            message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.incremented_version }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
-          fi
-          echo "success_message=$message" >> $GITHUB_OUTPUT
+#           # if the version was incremented and committed, add that to the success message
+#           if [ ${{ steps.determine-new-version.outputs.incremented_version }} != "" ]; then
+#             message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.incremented_version }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
+#           fi
+#           echo "success_message=$message" >> $GITHUB_OUTPUT
 
-      - name: Success Comment version on PR
-        if: ${{ success() }}
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: "${{ steps.set-success-comment.outputs.success_message }}"
-          pr_number: ${{ github.event.number }}
+#       - name: Success Comment version on PR
+#         if: ${{ success() }}
+#         uses: thollander/actions-comment-pull-request@v2
+#         with:
+#           message: "${{ steps.set-success-comment.outputs.success_message }}"
+#           pr_number: ${{ github.event.number }}
 
 
-      - name: Failure Comment on PR
-        if: ${{ failure() }}
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: ":warning: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
-          pr_number: ${{ github.event.number }}
+#       - name: Failure Comment on PR
+#         if: ${{ failure() }}
+#         uses: thollander/actions-comment-pull-request@v2
+#         with:
+#           message: ":warning: **Publish version workflow:** Something went wrong during the [workflow execution](${{github.event.pull_request.base.repo.html_url}}/actions/runs/${{github.run_id}}), no new version was published."
+#           pr_number: ${{ github.event.number }}
