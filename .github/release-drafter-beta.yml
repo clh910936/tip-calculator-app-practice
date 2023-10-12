@@ -1,4 +1,5 @@
-# include-prereleases: true
+filter-by-commitish: true
+commitish: beta
 name-template: "v$RESOLVED_VERSION-beta"
 tag-template: "v$RESOLVED_VERSION-beta"
 categories:
