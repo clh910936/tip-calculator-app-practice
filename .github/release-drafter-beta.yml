@@ -1,7 +1,6 @@
 # include-prereleases: true
-name-template: "v$RESOLVED_VERSION"
-tag-template: "v$RESOLVED_VERSION"
-version-template: "$COMPLETE"
+name-template: "v$RESOLVED_VERSION-beta"
+tag-template: "v$RESOLVED_VERSION-beta"
 categories:
   - title: "🚀 Features"
     labels:
