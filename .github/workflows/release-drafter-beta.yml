@@ -16,7 +16,6 @@ jobs:
         with:
           config-name: release-drafter-beta.yml
           commitish: beta
-          # prerelease: true
-          prerelease-identifier: beta
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

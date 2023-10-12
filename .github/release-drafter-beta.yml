@@ -1,5 +1,3 @@
-filter-by-commitish: true
-commitish: beta
 # include-prereleases: true
 name-template: "v$RESOLVED_VERSION"
 tag-template: "v$RESOLVED_VERSION"
