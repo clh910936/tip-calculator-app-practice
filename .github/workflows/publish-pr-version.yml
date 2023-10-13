@@ -70,6 +70,7 @@ jobs:
 
           # append the target branch and the first 5 of the sha to the version
           # ex XX.XX.XX-branch.sha format
+          # TODO: check if we want the branch in the version, the name can get long
           new_version="${new_version_number}-${{ github.head_ref }}.${trimmed_sha}"
 
           echo "New version: $new_version"
