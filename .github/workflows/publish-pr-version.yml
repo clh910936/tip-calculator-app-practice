@@ -28,6 +28,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        
 
       - name: Fetch latest changes
         run: git fetch --prune
@@ -66,7 +67,7 @@ jobs:
 
           version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
           # check if the PR has the label "patch"
-          echo "toJSON(${{github.event.pull_request.labels.*.name}})"
+          echo "${{ toJSON(github.event.pull_request.labels.*.name)}}"
           if [[ ${{ github.event.pull_request.labels[*].name }} =~ "patch" ]]; then
             echo "PR has the 'patch' label. Incrementing patch version"
             split_version=(${new_version_number//./ })
@@ -97,7 +98,7 @@ jobs:
 
           # append the target branch and the first 5 of the sha to the version
           # ex XX.XX.XX-branch.sha format
-          new_version="${new_version_number}-${{ github.base_ref }}.${trimmed_sha}"
+          new_version="${new_version_number}-${{ github.head_ref }}.${trimmed_sha}"
 
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
