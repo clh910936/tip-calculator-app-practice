@@ -67,6 +67,7 @@ jobs:
           version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
           # check if the PR has the label "patch"
           labelsArr=(${{ github.event.pull_request.labels.*.name }})
+          echo "$labelsArr"
           # check if array has "patch" as an element
           if [[ " ${labelsArr[@]} " =~ "patch" ]]; then
             echo "PR has the 'patch' label. Incrementing patch version"
