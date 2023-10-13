@@ -32,14 +32,14 @@ jobs:
           git add package.json
           git commit -m "Incrementing package.json to $raw_version_number in preparation for eventual merge"
           git push
-      - name: Create and push new git tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          new_version=${{ github.event.release.tag_name }}
-          git tag $new_version -m "Published from release: ${{github.event.release.name}}"
-          git push origin HEAD
-          git push --tags
+      # - name: Create and push new git tag
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     new_version=${{ github.event.release.tag_name }}
+      #     git tag $new_version -m "Published from release: ${{github.event.release.name}}"
+      #     git push origin HEAD
+      #     git push --tags
 
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3
