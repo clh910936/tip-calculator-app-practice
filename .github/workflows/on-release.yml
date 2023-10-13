@@ -25,12 +25,13 @@ jobs:
           tag_name=${{ github.event.release.tag_name }}
           # regex removes the leading 'v' from the tag name
           raw_version_number=${incremented_version#"v"}
+          echo "raw_version_number: $raw_version_number"
           jq --arg raw_version_number "$raw_version_number" '.version = $raw_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
 
           git add package.json
           git commit -m "Incrementing package.json to $raw_version_number in preparation for eventual merge"
-          git push
+          git push --force
       - name: Create and push new git tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
