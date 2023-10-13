@@ -28,6 +28,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+        # print the event
+      - name: Print github event
+        run: |
+          echo "${{ toJson(github.event) }}"
 
       - name: Fetch latest changes
         run: git fetch --prune
