@@ -133,6 +133,7 @@ jobs:
       #     # Defaults to the user or organization that owns the workflow file
       #     scope: '@red-digital'
       # - run: npm i
+      # # TODO check on this if we aren't doing alpha/beta
       # - run: npm publish --tag ${{ github.base_ref }}
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
