@@ -67,7 +67,6 @@ jobs:
 
           version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
           # check if the PR has the label "patch"
-          echo "${{ toJSON(github.event.pull_request.labels.*.name)}}"
           if [[ ${{ contains(github.event.pull_request.labels[*].name, 'patch') }}]]; then
             echo "PR has the 'patch' label. Incrementing patch version"
             split_version=(${new_version_number//./ })
