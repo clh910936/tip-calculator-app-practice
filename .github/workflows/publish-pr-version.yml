@@ -16,8 +16,6 @@ name: Publish Development Version on PR
 
 on:
   pull_request:
-    branches:
-      - main
 
 jobs:
   publish-tag:
