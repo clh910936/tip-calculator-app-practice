@@ -1,0 +1,33 @@
+# On a release being published, checkout the main branch, create a new file, commit that file, and push it to main
+
+name: Publish on Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+      # print the event in JSON
+      - name: Print Event
+        run: echo '${{ toJson(github.event) }}'
+      - name: Create file
+        run: |
+          echo "Hello World" > hello.txt
+      - name: Configure Git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git checkout ${{ github.head_ref }}
+      - name: Commit file
+        run: |
+          git add hello.txt
+          git commit -m "Add hello.txt"
+          git push
