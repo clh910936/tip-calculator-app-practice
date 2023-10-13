@@ -1,51 +1,51 @@
 {
   "action": "synchronize",
-  "after": "8d673b4ddd992e4de72d5d6ee183bbf89e5b900b",
-  "before": "4b65ac7501d99aeb92dbd4a911f2f5ef18e4fdfe",
-  "number": 37,
+  "after": "69ffb710940289f9ffc4a30890c3472bcd76d5ff",
+  "before": "df226a2581a2702fc5c399167ea318f6f8ef5fa9",
+  "number": 103,
   "pull_request": {
     "_links": {
       "comments": {
-        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/37/comments"
+        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/103/comments"
       },
       "commits": {
-        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/37/commits"
+        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/103/commits"
       },
       "html": {
-        "href": "https://github.com/clh910936/tip-calculator-app-practice/pull/37"
+        "href": "https://github.com/clh910936/tip-calculator-app-practice/pull/103"
       },
       "issue": {
-        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/37"
+        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/103"
       },
       "review_comment": {
         "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/comments{/number}"
       },
       "review_comments": {
-        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/37/comments"
+        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/103/comments"
       },
       "self": {
-        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/37"
+        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/103"
       },
       "statuses": {
-        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/statuses/8d673b4ddd992e4de72d5d6ee183bbf89e5b900b"
+        "href": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/statuses/69ffb710940289f9ffc4a30890c3472bcd76d5ff"
       }
     },
     "active_lock_reason": null,
-    "additions": 22866,
+    "additions": 29,
     "assignee": null,
     "assignees": [],
-    "author_association": "OWNER",
+    "author_association": "CONTRIBUTOR",
     "auto_merge": null,
     "base": {
-      "label": "clh910936:beta",
-      "ref": "beta",
+      "label": "clh910936:main",
+      "ref": "main",
       "repo": {
         "allow_auto_merge": false,
         "allow_forking": true,
-        "allow_merge_commit": true,
-        "allow_rebase_merge": true,
+        "allow_merge_commit": false,
+        "allow_rebase_merge": false,
         "allow_squash_merge": true,
-        "allow_update_branch": false,
+        "allow_update_branch": true,
         "archive_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/{archive_format}{/ref}",
         "archived": false,
         "assignees_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/assignees{/user}",
@@ -59,8 +59,8 @@
         "contents_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/contents/{+path}",
         "contributors_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/contributors",
         "created_at": "2021-10-21T19:10:58Z",
-        "default_branch": "master",
-        "delete_branch_on_merge": false,
+        "default_branch": "main",
+        "delete_branch_on_merge": true,
         "deployments_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/deployments",
         "description": null,
         "disabled": false,
@@ -102,8 +102,8 @@
         "name": "tip-calculator-app-practice",
         "node_id": "R_kgDOGQZc1A",
         "notifications_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/notifications{?since,all,participating}",
-        "open_issues": 20,
-        "open_issues_count": 20,
+        "open_issues": 4,
+        "open_issues_count": 4,
         "owner": {
           "avatar_url": "https://avatars.githubusercontent.com/u/54039834?v=4",
           "events_url": "https://api.github.com/users/clh910936/events{/privacy}",
@@ -126,9 +126,9 @@
         },
         "private": false,
         "pulls_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls{/number}",
-        "pushed_at": "2023-09-01T18:20:30Z",
+        "pushed_at": "2023-10-13T19:24:24Z",
         "releases_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/releases{/id}",
-        "size": 660,
+        "size": 585,
         "squash_merge_commit_message": "COMMIT_MESSAGES",
         "squash_merge_commit_title": "COMMIT_OR_PR_TITLE",
         "ssh_url": "git@github.com:clh910936/tip-calculator-app-practice.git",
@@ -150,7 +150,7 @@
         "watchers_count": 0,
         "web_commit_signoff_required": false
       },
-      "sha": "af3a9f563969e36c4441a51dd2358b23248b5c84",
+      "sha": "273f131ebda4f1a7b997486b6af133efc05a1aba",
       "user": {
         "avatar_url": "https://avatars.githubusercontent.com/u/54039834?v=4",
         "events_url": "https://api.github.com/users/clh910936/events{/privacy}",
@@ -172,27 +172,27 @@
         "url": "https://api.github.com/users/clh910936"
       }
     },
-    "body": "# [JIRA TASK](https://redventures.atlassian.net/browse/FMT-REPLACE) - Pull Request\r\n\r\n## Intent or Description\r\nInclude intent of Pull Request here\r\n\r\n## Related Resources\r\nInclude any related resources to this pull request, such as confluence documentation, links to epics, etc.\r\n\r\n## QA\r\nExplain how you are validating the results of your changes\r\n",
-    "changed_files": 5,
+    "body": "# [JIRA TASK](https://redventures.atlassian.net/browse/FMT-REPLACE) - Pull Request\n\n## Intent or Description\nInclude intent of Pull Request here\n\n## Related Resources\nInclude any related resources to this pull request, such as confluence documentation, links to epics, etc.\n\n## QA\nExplain how you are validating the results of your changes\n\n",
+    "changed_files": 4,
     "closed_at": null,
-    "comments": 1,
-    "comments_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/37/comments",
-    "commits": 67,
-    "commits_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/37/commits",
-    "created_at": "2023-08-14T20:05:41Z",
-    "deletions": 171,
-    "diff_url": "https://github.com/clh910936/tip-calculator-app-practice/pull/37.diff",
-    "draft": false,
+    "comments": 3,
+    "comments_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/103/comments",
+    "commits": 7,
+    "commits_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/103/commits",
+    "created_at": "2023-10-13T19:10:07Z",
+    "deletions": 152,
+    "diff_url": "https://github.com/clh910936/tip-calculator-app-practice/pull/103.diff",
+    "draft": true,
     "head": {
-      "label": "clh910936:beta-test",
-      "ref": "beta-test",
+      "label": "clh910936:temp",
+      "ref": "temp",
       "repo": {
         "allow_auto_merge": false,
         "allow_forking": true,
-        "allow_merge_commit": true,
-        "allow_rebase_merge": true,
+        "allow_merge_commit": false,
+        "allow_rebase_merge": false,
         "allow_squash_merge": true,
-        "allow_update_branch": false,
+        "allow_update_branch": true,
         "archive_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/{archive_format}{/ref}",
         "archived": false,
         "assignees_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/assignees{/user}",
@@ -206,8 +206,8 @@
         "contents_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/contents/{+path}",
         "contributors_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/contributors",
         "created_at": "2021-10-21T19:10:58Z",
-        "default_branch": "master",
-        "delete_branch_on_merge": false,
+        "default_branch": "main",
+        "delete_branch_on_merge": true,
         "deployments_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/deployments",
         "description": null,
         "disabled": false,
@@ -249,8 +249,8 @@
         "name": "tip-calculator-app-practice",
         "node_id": "R_kgDOGQZc1A",
         "notifications_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/notifications{?since,all,participating}",
-        "open_issues": 20,
-        "open_issues_count": 20,
+        "open_issues": 4,
+        "open_issues_count": 4,
         "owner": {
           "avatar_url": "https://avatars.githubusercontent.com/u/54039834?v=4",
           "events_url": "https://api.github.com/users/clh910936/events{/privacy}",
@@ -273,9 +273,9 @@
         },
         "private": false,
         "pulls_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls{/number}",
-        "pushed_at": "2023-09-01T18:20:30Z",
+        "pushed_at": "2023-10-13T19:24:24Z",
         "releases_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/releases{/id}",
-        "size": 660,
+        "size": 585,
         "squash_merge_commit_message": "COMMIT_MESSAGES",
         "squash_merge_commit_title": "COMMIT_OR_PR_TITLE",
         "ssh_url": "git@github.com:clh910936/tip-calculator-app-practice.git",
@@ -297,7 +297,7 @@
         "watchers_count": 0,
         "web_commit_signoff_required": false
       },
-      "sha": "8d673b4ddd992e4de72d5d6ee183bbf89e5b900b",
+      "sha": "69ffb710940289f9ffc4a30890c3472bcd76d5ff",
       "user": {
         "avatar_url": "https://avatars.githubusercontent.com/u/54039834?v=4",
         "events_url": "https://api.github.com/users/clh910936/events{/privacy}",
@@ -319,52 +319,71 @@
         "url": "https://api.github.com/users/clh910936"
       }
     },
-    "html_url": "https://github.com/clh910936/tip-calculator-app-practice/pull/37",
-    "id": 1475027216,
-    "issue_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/37",
-    "labels": [],
+    "html_url": "https://github.com/clh910936/tip-calculator-app-practice/pull/103",
+    "id": 1556373057,
+    "issue_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/issues/103",
+    "labels": [
+      {
+        "color": "3B2E58",
+        "default": false,
+        "description": "PR author",
+        "id": 5350305383,
+        "name": "clh910936",
+        "node_id": "LA_kwDOGQZc1M8AAAABPucuZw",
+        "url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/labels/clh910936"
+      },
+      {
+        "color": "DDC749",
+        "default": false,
+        "description": "",
+        "id": 6081334708,
+        "name": "patch",
+        "node_id": "LA_kwDOGQZc1M8AAAABannNtA",
+        "url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/labels/patch"
+      }
+    ],
     "locked": false,
     "maintainer_can_modify": false,
-    "merge_commit_sha": "9bd2b0318712828a0ee57f1463c427e38b312f47",
+    "merge_commit_sha": "818eba495aeff0c710c22f301206c161f4d8cd78",
     "mergeable": null,
     "mergeable_state": "unknown",
     "merged": false,
     "merged_at": null,
     "merged_by": null,
     "milestone": null,
-    "node_id": "PR_kwDOGQZc1M5X6yEQ",
-    "number": 37,
-    "patch_url": "https://github.com/clh910936/tip-calculator-app-practice/pull/37.patch",
+    "node_id": "PR_kwDOGQZc1M5cxF5B",
+    "number": 103,
+    "patch_url": "https://github.com/clh910936/tip-calculator-app-practice/pull/103.patch",
     "rebaseable": null,
     "requested_reviewers": [],
     "requested_teams": [],
     "review_comment_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/comments{/number}",
     "review_comments": 0,
-    "review_comments_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/37/comments",
+    "review_comments_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/103/comments",
     "state": "open",
-    "statuses_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/statuses/8d673b4ddd992e4de72d5d6ee183bbf89e5b900b",
-    "title": "testing",
-    "updated_at": "2023-09-01T18:20:29Z",
-    "url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/37",
+    "statuses_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/statuses/69ffb710940289f9ffc4a30890c3472bcd76d5ff",
+    "title": "temp",
+    "updated_at": "2023-10-13T19:24:28Z",
+    "url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls/103",
     "user": {
-      "avatar_url": "https://avatars.githubusercontent.com/u/54039834?v=4",
-      "events_url": "https://api.github.com/users/clh910936/events{/privacy}",
-      "followers_url": "https://api.github.com/users/clh910936/followers",
-      "following_url": "https://api.github.com/users/clh910936/following{/other_user}",
-      "gists_url": "https://api.github.com/users/clh910936/gists{/gist_id}",
+      "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+      "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+      "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+      "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+      "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
       "gravatar_id": "",
-      "html_url": "https://github.com/clh910936",
-      "id": 54039834,
-      "login": "clh910936",
-      "node_id": "MDQ6VXNlcjU0MDM5ODM0",
-      "organizations_url": "https://api.github.com/users/clh910936/orgs",
-      "received_events_url": "https://api.github.com/users/clh910936/received_events",
-      "repos_url": "https://api.github.com/users/clh910936/repos",
+      "html_url": "https://github.com/apps/github-actions",
+      "id": 41898282,
+      "login": "github-actions[bot]",
+      "node_id": "MDM6Qm90NDE4OTgyODI=",
+      "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+      "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+      "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
       "site_admin": false,
-      "starred_url": "https://api.github.com/users/clh910936/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/clh910936/subscriptions",
-      "type": "User",
-      "url": "https://api.github.com/users/clh910936"
+      "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+      "type": "Bot",
+      "url": "https://api.github.com/users/github-actions%5Bbot%5D"
     }
   },
   "repository": {
@@ -382,7 +401,7 @@
     "contents_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/contents/{+path}",
     "contributors_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/contributors",
     "created_at": "2021-10-21T19:10:58Z",
-    "default_branch": "master",
+    "default_branch": "main",
     "deployments_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/deployments",
     "description": null,
     "disabled": false,
@@ -422,8 +441,8 @@
     "name": "tip-calculator-app-practice",
     "node_id": "R_kgDOGQZc1A",
     "notifications_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/notifications{?since,all,participating}",
-    "open_issues": 20,
-    "open_issues_count": 20,
+    "open_issues": 4,
+    "open_issues_count": 4,
     "owner": {
       "avatar_url": "https://avatars.githubusercontent.com/u/54039834?v=4",
       "events_url": "https://api.github.com/users/clh910936/events{/privacy}",
@@ -446,9 +465,9 @@
     },
     "private": false,
     "pulls_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/pulls{/number}",
-    "pushed_at": "2023-09-01T18:20:30Z",
+    "pushed_at": "2023-10-13T19:24:24Z",
     "releases_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/releases{/id}",
-    "size": 660,
+    "size": 585,
     "ssh_url": "git@github.com:clh910936/tip-calculator-app-practice.git",
     "stargazers_count": 0,
     "stargazers_url": "https://api.github.com/repos/clh910936/tip-calculator-app-practice/stargazers",

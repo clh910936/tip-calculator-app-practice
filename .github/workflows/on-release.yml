@@ -1,6 +1,8 @@
-# On a release being published, checkout the main branch, create a new file, commit that file, and push it to main
+# On a release being published,
+# 1. Update the package.json version to match the release tag
+# 2. Publish the new version to npm
 
-name: Publish on Release
+name: Publish Package Version on Release
 
 on:
   release:
@@ -30,16 +32,8 @@ jobs:
           cat package.json
 
           git add package.json
-          git commit -m "Incrementing package.json to $raw_version_number in preparation for eventual merge"
+          git commit -m "Updating package.json to $raw_version_number from release"
           git push
-      # - name: Create and push new git tag
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     new_version=${{ github.event.release.tag_name }}
-      #     git tag $new_version -m "Published from release: ${{github.event.release.name}}"
-      #     git push origin HEAD
-      #     git push --tags
 
       # Setup .npmrc file to publish to GitHub Packages
       - uses: actions/setup-node@v3

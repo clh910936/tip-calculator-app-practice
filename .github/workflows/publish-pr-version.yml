@@ -16,8 +16,6 @@ name: Publish Development Version on PR
 
 on:
   pull_request:
-    branches:
-      - main
 
 jobs:
   publish-tag:
@@ -30,6 +28,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        
 
       - name: Fetch latest changes
         run: git fetch --prune
@@ -67,31 +66,37 @@ jobs:
           new_version_number="${{ steps.extract-version-number.outputs.pr_version_number }}"
 
           version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
-          version_target="${{ steps.read-target-package-json.outputs.target_branch_version }}"
 
-          # package.json version in PR branch must be greater than or equal to the target branch version
-          if [[ $version_pr < $version_target ]]; then
-            echo "The 'version' key in package.json is less than the target branch version. This is not allowed. It's possible a new version has been published on the target branch since this code was written. Please update the package.json version."
-            exit 1
-          fi
+          # check if the PR has the label "patch"
+          if [[ ${{ contains(github.event.pull_request.labels.*.name, 'patch') }} == true ]]; then
+            echo "PR has the 'patch' label. Incrementing patch version"
+            split_version=(${new_version_number//./ })
+            incremented_patch=$((${split_version[2]}+1))
+            new_version_number="${split_version[0]}.${split_version[1]}.$incremented_patch"
 
-          # if the target branch version and the PR's version are the same, increment the minor version
-          # otherwise, use the version in the PR branch because it was manually incremented (ex major or patch version bump)
-          if [[ $version_pr == $version_target ]]; then
-            echo "The 'version' key in package.json matches the target branch version. Need to increment"
+          # check if the PR has the label "major"
+          elif [[ ${{ contains(github.event.pull_request.labels.*.name, 'major') }} == true ]]; then
+            echo "PR has the 'major' label. Incrementing major version"
+            split_version=(${new_version_number//./ })
+            incremented_major=$((${split_version[0]}+1))
+            new_version_number="$incremented_major.0.0"
+
+          # no patch or major label, increment minor as default
+          else
+            echo "PR does not have the 'patch' or 'major' label. Incrementing minor version"
             split_version=(${new_version_number//./ })
             incremented_minor=$((${split_version[1]}+1))
             new_version_number="${split_version[0]}.$incremented_minor.0"
-
-            echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
           fi
+
+          echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
 
           github_sha="${{ github.event.pull_request.head.sha }}"
           trimmed_sha="${github_sha::5}"
 
           # append the target branch and the first 5 of the sha to the version
           # ex XX.XX.XX-branch.sha format
-          new_version="${new_version_number}-${{ github.base_ref }}.${trimmed_sha}"
+          new_version="${new_version_number}-${{ github.head_ref }}.${trimmed_sha}"
 
           echo "New version: $new_version"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
@@ -103,21 +108,6 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout ${{ github.head_ref }}
-
-      # if the version was incremented, update the package.json in the PR branch and commit that
-      - name: Update PR version number and save to package.json
-        id: update-package-json-base
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.determine-new-version.outputs.incremented_version
-        run: |
-          incremented_version="${{ steps.determine-new-version.outputs.incremented_version }}"
-          jq --arg incremented_version "$incremented_version" '.version = $incremented_version' package.json > package.json.tmp && mv package.json.tmp package.json
-          cat package.json
-
-          git add package.json
-          git commit -m "Incrementing package.json to v$incremented_version in preparation for eventual merge"
-          git push
 
       - name: Update (but not save) package.json with temporary version (XX.XX.XX-branch.sha)
         id: temp-update-package-json
@@ -152,11 +142,7 @@ jobs:
         if: ${{ success() }}
         run: |
           message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
-
-          # if the version was incremented and committed, add that to the success message
-          if [ ${{ steps.determine-new-version.outputs.incremented_version }} != "" ]; then
-            message="$message <br> <br> :white_check_mark: **Committed incremented version:** updated the package.json version to: **v${{ steps.determine-new-version.outputs.incremented_version }}**. This is only done when the base branch package.json version matches the target branch version and is done in preparation for the eventual merge."
-          fi
+          message="$message <br> <br> This is a version for testing, the final package version is determined when a new release is published. Add a label 'patch', 'minor', or 'major' to the PR to adjust the testing version."
           echo "success_message=$message" >> $GITHUB_OUTPUT
 
       - name: Success Comment version on PR
