@@ -157,7 +157,7 @@ jobs:
         if: ${{ success() }}
         run: |
           message=":white_check_mark: **New version published:** [v${{ steps.determine-new-version.outputs.new_version }}](${{github.event.pull_request.base.repo.html_url}}/releases/tag/v${{ steps.determine-new-version.outputs.new_version }})"
-          message="$message <br> <br> This is only a temporary version, the final published version is determined when a new release is published. Add a label 'patch', 'minor', or 'major' to the PR to increment the version."
+          message="$message <br> <br> This is a version for testing, the final package version is determined when a new release is published. Add a label 'patch', 'minor', or 'major' to the PR to adjust the testing version."
           echo "success_message=$message" >> $GITHUB_OUTPUT
 
       - name: Success Comment version on PR
