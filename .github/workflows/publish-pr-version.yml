@@ -109,21 +109,6 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout ${{ github.head_ref }}
 
-      # if the version was incremented, update the package.json in the PR branch and commit that
-      - name: Update PR version number and save to package.json
-        id: update-package-json-base
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: steps.determine-new-version.outputs.incremented_version
-        run: |
-          incremented_version="${{ steps.determine-new-version.outputs.incremented_version }}"
-          jq --arg incremented_version "$incremented_version" '.version = $incremented_version' package.json > package.json.tmp && mv package.json.tmp package.json
-          cat package.json
-
-          git add package.json
-          git commit -m "Incrementing package.json to v$incremented_version in preparation for eventual merge"
-          git push
-
       - name: Update (but not save) package.json with temporary version (XX.XX.XX-branch.sha)
         id: temp-update-package-json
         run: |
