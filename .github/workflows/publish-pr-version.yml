@@ -74,7 +74,6 @@ jobs:
             incremented_patch=$((${split_version[2]}+1))
             new_version_number="${split_version[0]}.${split_version[1]}.$incremented_patch"
 
-            echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
           # check if the PR has the label "major"
           elif [[ ${{ contains(github.event.pull_request.labels.*.name, 'major') }} ]]; then
             echo "PR has the 'major' label. Incrementing major version"
@@ -82,16 +81,15 @@ jobs:
             incremented_major=$((${split_version[0]}+1))
             new_version_number="$incremented_major.0.0"
 
-            echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
+          # no patch or major label, increment minor as default
           else
             echo "PR does not have the 'patch' or 'major' label. Incrementing minor version"
             split_version=(${new_version_number//./ })
             incremented_minor=$((${split_version[1]}+1))
             new_version_number="${split_version[0]}.$incremented_minor.0"
-
-            echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
           fi
 
+          echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
 
           github_sha="${{ github.event.pull_request.head.sha }}"
           trimmed_sha="${github_sha::5}"
