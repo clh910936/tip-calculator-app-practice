@@ -75,7 +75,7 @@ jobs:
 
             echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
           # check if the PR has the label "major"
-          if [[ ${{ contains(github.event.pull_request.labels[*].name, 'major') }}]]; then
+          elif [[ ${{ contains(github.event.pull_request.labels[*].name, 'major') }}]]; then
             echo "PR has the 'major' label. Incrementing major version"
             split_version=(${new_version_number//./ })
             incremented_major=$((${split_version[0]}+1))
