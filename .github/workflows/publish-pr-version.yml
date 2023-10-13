@@ -68,7 +68,7 @@ jobs:
           version_pr="${{ steps.read-pr-package-json.outputs.pr_version }}"
           # check if the PR has the label "patch"
           echo "${{ toJSON(github.event.pull_request.labels.*.name)}}"
-          if [[ ${{ github.event.pull_request.labels[*].name }} =~ "patch" ]]; then
+          if [[ ${{ contains(github.event.pull_request.labels[*].name, 'patch') }}]]; then
             echo "PR has the 'patch' label. Incrementing patch version"
             split_version=(${new_version_number//./ })
             incremented_patch=$((${split_version[2]}+1))
@@ -76,7 +76,7 @@ jobs:
 
             echo "incremented_version=$new_version_number" >> $GITHUB_OUTPUT
           # check if the PR has the label "major"
-          elif [[ ${{ github.event.pull_request.labels[*].name }} =~ "major" ]]; then
+          if [[ ${{ contains(github.event.pull_request.labels[*].name, 'major') }}]]; then
             echo "PR has the 'major' label. Incrementing major version"
             split_version=(${new_version_number//./ })
             incremented_major=$((${split_version[0]}+1))
