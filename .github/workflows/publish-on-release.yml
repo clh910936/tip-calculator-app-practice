@@ -23,6 +23,7 @@ jobs:
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           git checkout ${{ github.head_ref }}
       - name: Update package.json version
+        id: update-package-json
         run: |
           tag_name=${{ github.event.release.tag_name }}
           # regex removes the leading 'v' from the tag name
@@ -31,18 +32,27 @@ jobs:
           jq --arg raw_version_number "$raw_version_number" '.version = $raw_version_number' package.json > package.json.tmp && mv package.json.tmp package.json
           cat package.json
 
+          branch_name="update-package-json-$raw_version_number"
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+
+          git checkout -b update-package-json
           git add package.json
           git commit -m "Updating package.json to $raw_version_number from release"
-          git push
-
-      # Setup .npmrc file to publish to GitHub Packages
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          registry-url: 'https://npm.pkg.github.com'
-          # Defaults to the user or organization that owns the workflow file
-          scope: '@red-digital'
-      - run: npm i
-      - run: echo "npm publish --tag"
+          git push -u origin update-package-json
+      - name: create pull request
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create -B "${{ steps.update-package-json.branch_name }}" -H ${GITHUB_REF} --title "${{github.event.release.tag_name}}" --body "Updating package.json to $raw_version_number from release"
+
+      # # Setup .npmrc file to publish to GitHub Packages
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '18.x'
+      #     registry-url: 'https://npm.pkg.github.com'
+      #     # Defaults to the user or organization that owns the workflow file
+      #     scope: '@red-digital'
+      # - run: npm i
+      # - run: echo "npm publish --tag"
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
