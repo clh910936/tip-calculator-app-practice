@@ -24,6 +24,8 @@ jobs:
           git checkout ${{ github.head_ref }}
       - name: Update package.json version
         id: update-package-json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           tag_name=${{ github.event.release.tag_name }}
           # regex removes the leading 'v' from the tag name
@@ -39,11 +41,7 @@ jobs:
           git add package.json
           git commit -m "Updating package.json to $raw_version_number from release"
           git push -u origin $branch_name
-      - name: create pull request
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh pr create -H ${{ github.event.repository.default_branch }} -B ${{steps.update-package-json.outputs.branch_name }} --title "${{github.event.release.tag_name}}" --body "Updating package.json to $raw_version_number from release"
+          gh pr create -H ${{ github.event.repository.default_branch }} -B "$branch_name" --title "${{github.event.release.tag_name}}" --body "Updating package.json to $raw_version_number from release"
 
       # # Setup .npmrc file to publish to GitHub Packages
       # - uses: actions/setup-node@v3
