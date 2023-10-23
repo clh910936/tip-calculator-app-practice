@@ -43,7 +43,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh pr create -B main -H "${{ steps.update-package-json.outputs.branch_name }}" -H ${GITHUB_REF} --title "${{github.event.release.tag_name}}" --body "Updating package.json to $raw_version_number from release"
+          gh pr create -B main -H ${GITHUB_REF} --title "${{github.event.release.tag_name}}" --body "Updating package.json to $raw_version_number from release"
 
       # # Setup .npmrc file to publish to GitHub Packages
       # - uses: actions/setup-node@v3
