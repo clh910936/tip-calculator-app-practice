@@ -39,7 +39,6 @@ jobs:
           git add package.json
           git commit -m "Updating package.json to $raw_version_number from release"
           git push -u origin $branch_name
-
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
