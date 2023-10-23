@@ -35,10 +35,11 @@ jobs:
           branch_name="update-package-json-$raw_version_number"
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
 
-          git checkout -b update-package-json
+          git checkout -b $branch_name
           git add package.json
           git commit -m "Updating package.json to $raw_version_number from release"
-          git push -u origin update-package-json
+          git push -u origin $branch_name
+
       - name: create pull request
         env:
           GH_TOKEN: ${{ github.token }}
