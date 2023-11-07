@@ -12,7 +12,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3.5.2
         with:
           ref: main
           # the ssh key below is tied to a deployment key that has write access
@@ -37,7 +37,6 @@ jobs:
           git add package.json
           git commit -m "Updating package.json to $raw_version_number for release"
           git push
-
 
       # # Setup .npmrc file to publish to GitHub Packages
       # - uses: actions/setup-node@v3
