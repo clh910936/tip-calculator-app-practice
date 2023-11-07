@@ -17,14 +17,16 @@ jobs:
           ref: main
           # the ssh key below is tied to a deployment key that has write access
           # this should allow bypassing branch protections to push to main
-          ssh-key: ${{secrets.AUTORELEASE_GHA_SSH}}
+          ssh-key: ${{ secrets.AUTORELEASE_GHA_SSH }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Configure Git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git checkout ${{ github.head_ref }}
+          git checkout main
+          git pull origin main
       - name: Update package.json version
         run: |
           tag_name=${{ github.event.release.tag_name }}
