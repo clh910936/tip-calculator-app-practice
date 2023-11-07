@@ -38,6 +38,7 @@ jobs:
           git commit -m "Updating package.json to $raw_version_number for release"
           git push
 
+
       # # Setup .npmrc file to publish to GitHub Packages
       # - uses: actions/setup-node@v3
       #   with:
