@@ -21,6 +21,6 @@ jobs:
           prefix_regex=$(IFS='|'; echo "^(${arr[*]})")
 
           # check if the branch starts with one of the strings in the array and ends with any value
-          if [[ ! "${{ github.head_ref }}" =~ $prefix_regex ]]; then
+          if [[ ! "${{ github.event.pull_request.base.ref }}" =~ $prefix_regex ]]; then
             echo "Branch name must be prefixed by one of the following: ${arr[@]}"
           fi
