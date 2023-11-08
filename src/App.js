@@ -11,7 +11,7 @@ function App() {
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
       <link href='https://fonts.googleapis.com/css2?family=Space+Mono&display=swap' rel="stylesheet" />
       <Container state={state} dispatch={dispatch}/>
-      <p>New Feature</p>
+      <p>Test Feature</p>
     </div>
   );
 }
