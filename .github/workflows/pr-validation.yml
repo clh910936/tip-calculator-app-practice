@@ -14,7 +14,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Check branch name
+      - name: Validate branch name prefix
         run: |
           # check if the branch name is prefixed by one of the strings in an array
           arr=('feature/' 'bugfix/' 'hotfix/' 'maintenance/' 'techdebt/')
@@ -22,6 +22,5 @@ jobs:
 
           # check if the branch starts with one of the strings in the array and ends with any value
           if [[ ! "${{ github.head_ref }}" =~ $prefix_regex ]]; then
-            echo "no"
             echo "Branch name must be prefixed by one of the following: ${arr[@]}"
           fi
