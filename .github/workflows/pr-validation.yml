@@ -32,6 +32,8 @@ jobs:
         run: |
           # check if the branch name is prefixed by one of the strings in an array
           arr=('feature/' 'bugfix/' 'hotfix/' 'maintenance/' 'techdebt/')
+
+          
           # check if the branch starts with one of the strings in the array
           if [[ ! " ${{ github.head_ref }} " =~ ^(${arr[@]}) ]]; then
             echo "Branch name must be prefixed by one of the following: ${arr[@]}"
